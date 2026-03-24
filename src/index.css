@@ -1,0 +1,33 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-decoration: none;
+  box-sizing: border-box;
+  outline: none;
+  border: none;
+  font-family: "Inter", sans-serif;
+}
+
+.hoverTextDecorationEffect {
+  position: relative;
+  &::before {
+    content: "";
+    position: absolute;
+    top: calc(100% - 5px);
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: white;
+    transition: 0.3s ease;
+  }
+  &:hover {
+    &::before {
+      width: 100%;
+    }
+  }
+}
+body {
+  background: rgb(16, 16, 16);
+}

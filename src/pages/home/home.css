@@ -1,0 +1,253 @@
+section#homeContainer {
+  width: 100%;
+  height: 100vh;
+  transition: 0.2s ease;
+  margin-left: var(--sidebar-width);
+  header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 20px;
+    padding-right: 40px;
+    width: 100%;
+    height: 100px;
+    border-bottom: 1px solid gray;
+    background: rgb(16, 16, 16);
+    span.header-title {
+      position: absolute;
+      top: 50%;
+      left: 30px;
+      transform: translateY(-50%);
+      color: white;
+      font-size: 28px;
+      font-weight: 600;
+    }
+    div.select-custom {
+      position: relative;
+      width: 220px;
+      div.select-trigger {
+        position: relative;
+        display: flex;
+        align-items: center;
+        padding-left: 10px;
+        background: rgb(44, 44, 44);
+        width: 100%;
+        height: 40px;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+        text-transform: capitalize;
+        svg {
+          position: absolute;
+          stroke: white;
+          right: 10px;
+          top: 50%;
+          transform: translateY(-50%) rotate(0deg);
+          transition: 0.2s ease;
+          &.open {
+            transform: translateY(-50%) rotate(180deg);
+          }
+        }
+      }
+      div.wrapper {
+        position: absolute;
+        top: calc(100% + 10px);
+        left: 0;
+        width: 100%;
+        overflow-y: scroll;
+        z-index: 2;
+        scrollbar-width: none;
+        &::-webkit-scrollbar {
+          display: none;
+        }
+        border-radius: 5px;
+
+        ul {
+          width: 100%;
+          transition: 0.3s ease-out;
+          max-height: 0px;
+          border: 1px solid transparent;
+          &.open {
+            max-height: calc(5 * 36px);
+            li {
+              height: 35px;
+              span {
+                opacity: 1;
+              }
+            }
+          }
+          li {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 0px;
+            background: rgb(44, 44, 44);
+            cursor: pointer;
+            user-select: none;
+            transition: 0.2s ease;
+            box-shadow: 2px 2px 5px 0 rgba(0, 0, 0, 0.2);
+            color: white;
+            span {
+              transition: 0.1s ease;
+              opacity: 0;
+            }
+            &:hover {
+              filter: brightness(1.2);
+            }
+            &:nth-child(even) {
+              background: rgb(70, 70, 70);
+            }
+          }
+          /*
+            &:hover {
+              li:nth-last-child(1) {
+                top: 0;
+                transform: perspective(1000px) rotateX(0deg);
+                scale: 1;
+              }
+    
+              li:nth-last-child(2) {
+                transform: perspective(1000px) rotateX(0deg);
+                scale: 1;
+              }
+            }
+              */
+        }
+      }
+    }
+    button.add-enterprise {
+      padding: 15px 20px;
+      border-radius: 8px;
+      color: white;
+      font-weight: bold;
+      background: none;
+      border: 1px solid white;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0);
+      transition: 0.2s ease;
+      &:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+    }
+  }
+  div.general-container {
+    width: 100%;
+    height: calc(100vh - 100px);
+    div.resume-cards {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      gap: 20px;
+      width: 100%;
+      height: 170px;
+      padding: 10px 30px;
+      div.card {
+        display: flex;
+        flex-flow: column;
+        gap: 4px;
+        background: rgb(44, 44, 44);
+        flex: 1;
+        border-radius: 10px;
+        padding: 15px 15px;
+        cursor: context-menu;
+        border: 2px solid transparent;
+        transition: 0.2s ease;
+        &:hover {
+          border: 2px solid white;
+          span.value {
+            left: 10px;
+          }
+        }
+        span.title {
+          font-size: 14px;
+          color: gray;
+        }
+        span.value {
+          position: relative;
+          left: 0;
+          font-size: 28px;
+          font-weight: bold;
+          color: white;
+          transition: 0.2s ease;
+        }
+        span.alert {
+          font-size: 12px;
+          &.negative {
+            color: red;
+          }
+          &.positive {
+            color: green;
+          }
+        }
+      }
+    }
+    div.table-wrapper {
+      width: 90%;
+      margin: 0 auto;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid gray;
+      table {
+        width: 100%;
+        color: white;
+        border-collapse: collapse;
+        td,
+        th {
+          text-align: center;
+          border-bottom: 1px solid gray;
+        }
+        thead {
+          border-radius: 5px 5px 0 0;
+          tr {
+            padding: 5px 0;
+            background: rgb(44, 44, 44);
+            th {
+              color: gray;
+              padding: 10px 0;
+            }
+          }
+        }
+        tr {
+          background: rgb(16, 16, 16);
+          td {
+            padding: 20px 10px;
+            &:first-child,
+            &:nth-child(2) {
+              width: 200px;
+              text-align: start;
+            }
+            span {
+              background: blue;
+              padding: 4px 10px;
+              border-radius: 5px;
+              &.badge-simples {
+                background: rgba(55, 138, 221, 0.15);
+                color: #378add;
+                border: 1px solid #378add;
+              }
+
+              &.badge-presumido {
+                background: rgba(186, 117, 23, 0.15);
+                color: #ba7517;
+                border: 1px solid #ba7517;
+              }
+
+              &.badge-folha {
+                background: rgba(29, 158, 117, 0.15);
+                color: #1d9e75;
+                border: 1px solid #1d9e75;
+              }
+            }
+          }
+          &:last-child {
+            td {
+              border-bottom: none;
+            }
+          }
+        }
+      }
+    }
+  }
+}
