@@ -1,0 +1,363 @@
+div#reportsContainer {
+  position: relative;
+  margin-left: var(--sidebar-width);
+  padding: 32px;
+  padding-top: 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  min-height: 100vh;
+  width: calc(100vw - var(--sidebar-width));
+  transition: margin-left 0.3s ease;
+  header.reports-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    padding: 20px;
+    border-bottom: 1px solid var(--secondary-text);
+    h1 {
+      font-size: 22;
+      font-weight: 500;
+      color: var(--primary-text);
+    }
+    p {
+      font-size: 13px;
+      color: var(--secondary-text);
+      margin-top: 4px;
+    }
+  }
+
+  div.month-scroller-wrap {
+    position: relative;
+    top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 80px;
+    gap: 8px;
+    div.month-scroller {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      overflow-x: auto;
+      padding: 8px 40px;
+      scrollbar-width: none;
+      cursor: grab;
+      user-select: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      span.month-item {
+        white-space: nowrap;
+        font-size: 12px;
+        color: #494949;
+        transition: all 0.3s ease;
+        flex-shrink: 0;
+        cursor: pointer;
+
+        &.near {
+          font-size: 14px;
+          color: #666;
+        }
+
+        &.active {
+          font-size: 18px;
+          color: white;
+          font-weight: 500;
+        }
+      }
+    }
+    .scroller-dots {
+      display: flex;
+      gap: 4px;
+      .scroller-dot {
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: #2a2a2a;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        &:hover {
+          width: 8px;
+          height: 8px;
+        }
+
+        &.active {
+          background: white;
+          width: 16px;
+          border-radius: 2px;
+        }
+      }
+    }
+  }
+  div.divider {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 100%;
+      height: 1px;
+      background: var(--secondary-text);
+      z-index: 0;
+    }
+    span.divider-label {
+      background: var(--background);
+      padding: 5px 15px;
+      color: white;
+      z-index: 1;
+    }
+  }
+  div.anomaly-cards-container {
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 20px;
+    div.anomaly-card {
+      flex: 1;
+      background: var(--item);
+      border-radius: 14px;
+      padding: 20px 24px;
+      cursor: pointer;
+      border-left: 0px solid transparent;
+      transition: 0.1s ease;
+
+      &:hover {
+        border-left: 5px solid white;
+      }
+      div.anomaly-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+        span.anomaly-title {
+          font-size: 14px;
+          font-weight: 500;
+          color: white;
+        }
+      }
+      ul.anomaly-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        li {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 10px 14px;
+          background: var(--list-item);
+          border-radius: 10px;
+          border-left: 3px solid transparent;
+          transition: background 0.2s;
+
+          &:hover {
+            background: var(--list-item-hover);
+          }
+
+          &.danger {
+            border-left-color: #e24b4a;
+          }
+
+          &.warn {
+            border-left-color: #ba7517;
+          }
+
+          &.missing {
+            border-left-color: #2a2a2a;
+          }
+
+          div.anomaly-avatar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 7px;
+            font-size: 11px;
+            font-weight: 500;
+            flex-shrink: 0;
+          }
+          div.anomaly-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+
+            span.anomaly-name {
+              font-size: 13px;
+              color: white;
+              font-weight: 500;
+            }
+
+            span.anomaly-meta {
+              font-size: 11px;
+              color: var(--secondary-text);
+            }
+          }
+          span.anomaly-badge {
+            font-size: 12px;
+            font-weight: 500;
+
+            &.danger {
+              color: #e24b4a;
+            }
+
+            &.warn {
+              color: #ba7517;
+            }
+          }
+        }
+      }
+    }
+  }
+  div.charts-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 20px;
+
+    div.chart-card {
+      position: relative;
+      background: var(--item);
+      box-shadow: -3px 3px 0 0px white;
+      border-radius: 14px;
+      padding: 24px;
+      top: 0;
+      transition: 0.2s ease-in-out;
+      width: 100%;
+      min-width: 0;
+      &:hover {
+        top: -10px;
+        box-shadow:
+          -2px 2px 6px 0 rgba(0, 0, 0, 0.99),
+          -12px 12px 0 0 white;
+      }
+
+      div.chart-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 20px;
+
+        h2.chart-title {
+          font-size: 14px;
+          font-weight: 500;
+          color: white;
+        }
+
+        p.chart-sub {
+          font-size: 11px;
+          color: var(--secondary-text);
+          margin-top: 3px;
+        }
+      }
+      select.field-select {
+        background: var(--select-primary);
+        color: #ccc;
+        padding: 7px 12px;
+        border-radius: 8px;
+        font-size: 12px;
+        cursor: pointer;
+      }
+
+      div.chart-wrap {
+        position: relative;
+        height: 260px;
+        width: 100%;
+      }
+      /* Ranking */
+
+      div.rank-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        div.rank-item {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+
+          span.rank-pos {
+            font-size: 11px;
+            color: #444;
+            width: 16px;
+            flex-shrink: 0;
+          }
+          div.rank-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            div.rank-name-row {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+
+              span.rank-name {
+                font-size: 12px;
+                color: #888;
+              }
+              span.rank-value {
+                font-size: 12px;
+                color: white;
+                font-weight: 500;
+              }
+            }
+
+            div.rank-bar-wrap {
+              height: 4px;
+              background: #1e1e1e;
+              border-radius: 2px;
+              overflow: hidden;
+
+              div.rank-bar {
+                height: 100%;
+                border-radius: 2px;
+                transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  span.tag {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+
+    &.tag-danger {
+      background: rgba(226, 75, 74, 0.12);
+      color: #e24b4a;
+      border: 0.5px solid rgba(226, 75, 74, 0.3);
+    }
+
+    &.tag-neutral {
+      background: #1a1a1a;
+      color: #666;
+      border: 0.5px solid #2a2a2a;
+    }
+  }
+  .empty {
+    font-size: 12px;
+    color: var(--secondary-text);
+    padding: 12px 0;
+    text-align: center;
+  }
+
+  .loading {
+    color: #666;
+    font-size: 13px;
+    padding: 32px;
+  }
+}

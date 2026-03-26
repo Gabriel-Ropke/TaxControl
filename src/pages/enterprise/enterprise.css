@@ -1,0 +1,188 @@
+div#enterpriseContainer {
+  width: 100vw;
+  min-height: 100vh;
+  header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 100px;
+    &::before {
+      content: "";
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--company-color), transparent);
+    }
+
+    div.enterprise-name-container {
+      display: grid;
+      grid-template-areas:
+        "back letter name"
+        "back letter tax";
+      grid-template-columns: 25% 30% 45%;
+      justify-items: center;
+      align-items: center;
+      width: 300px;
+      height: 100%;
+      svg {
+        grid-area: back;
+        cursor: pointer;
+        stroke: gray;
+        transition: 0.2s ease;
+        &:hover {
+          stroke: white;
+        }
+      }
+      span.enterprise-letter {
+        grid-area: letter;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 70px;
+        height: 70px;
+        background: var(--company-alpha);
+        border-radius: 10px;
+        border: 2px solid var(--company-color);
+        color: var(--company-color);
+        font-size: 24px;
+        cursor: context-menu;
+        user-select: none;
+        transition: 0.35s ease;
+        &:hover {
+          scale: 1.1;
+        }
+      }
+      span.enterprise-name {
+        grid-area: name;
+        align-self: flex-end;
+        justify-self: flex-start;
+        font-size: 24px;
+        color: var(--company-color);
+      }
+      span.enterprise-tax {
+        grid-area: tax;
+        align-self: flex-start;
+        justify-self: flex-start;
+        font-size: 12px;
+        padding: 2px 5px;
+        border-radius: 5px;
+        cursor: context-menu;
+      }
+    }
+    div.header-buttons {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 20px;
+      padding-right: 50px;
+      height: 100%;
+      button {
+        padding: 15px 40px;
+      }
+    }
+  }
+  section#enterprise {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    padding: 0 30px;
+    padding-bottom: 50px;
+    width: 100%;
+    div.charts {
+      display: flex;
+      flex-flow: column;
+      align-items: center;
+      width: 100%;
+      height: 500px;
+      background: #2c2c2c;
+      border-radius: 20px;
+      span.charts-title {
+        display: block;
+        width: 100%;
+        padding: 20px 40px;
+        color: rgb(171, 171, 171);
+      }
+    }
+    div.table-wrapper {
+      margin-top: 30px;
+      width: 100%;
+      background: #2c2c2c;
+      border-radius: 10px;
+      border: 1px solid rgb(194, 194, 194);
+      div.table-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 30px;
+        span.table-title {
+          display: block;
+          width: 100%;
+          font-size: 14px;
+          color: rgb(194, 194, 194);
+        }
+        button.new-register {
+          padding: 15px 40px;
+          white-space: nowrap;
+        }
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        thead {
+          tr {
+            th {
+              color: rgb(194, 194, 194);
+              font-weight: 500;
+              font-size: 12px;
+              text-transform: capitalize;
+              padding: 10px;
+            }
+          }
+        }
+        tr {
+          th,
+          td {
+            text-align: center;
+            border-top: 1px solid rgb(194, 194, 194);
+            padding: 20px 10px;
+            color: white;
+            span {
+              &.negative {
+                color: var(--negative-color);
+              }
+              &.positive {
+                color: var(--positive-color);
+              }
+            }
+          }
+          td.td-actions {
+            button {
+              padding: 5px 20px;
+              margin-left: 10px;
+              background: black;
+              border-radius: 5px;
+              cursor: pointer;
+              background: #ff2525;
+              transition: 0.1s ease;
+              &:hover {
+                filter: brightness(0.8);
+              }
+              svg {
+                stroke: white;
+              }
+              &:first-child {
+                margin-left: 0;
+                background: #2580ff;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

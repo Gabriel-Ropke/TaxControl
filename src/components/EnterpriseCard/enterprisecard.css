@@ -1,7 +1,6 @@
 div.enterprise {
   position: relative;
-  background: rgb(35, 35, 35);
-  border: 1px solid rgb(60, 60, 60);
+  background: var(--item);
   padding-top: 5px;
   height: 100%;
   width: 100%;
@@ -27,6 +26,13 @@ div.enterprise {
       svg {
         stroke: white;
         transform: translateX(10px);
+      }
+    }
+    div.top {
+      div.value {
+        span.date {
+          color: white;
+        }
       }
     }
   }
@@ -81,7 +87,8 @@ div.enterprise {
       padding-right: 20px;
       span.date {
         font-size: 10px;
-        color: gray;
+        color: var(--secondary-text);
+        transition: 0.2s ease;
       }
       span.total-value {
         color: white;
@@ -113,11 +120,11 @@ div.enterprise {
     height: 40px;
     padding: 0 20px;
     span.last-register {
-      color: gray;
+      color: var(--secondary-text);
       transition: 0.2s ease;
     }
     svg {
-      stroke: gray;
+      stroke: var(--secondary-text);
       transition: 0.2s ease;
     }
   }

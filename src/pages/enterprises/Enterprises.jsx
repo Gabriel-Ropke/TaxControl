@@ -66,7 +66,7 @@ export function Enterprises() {
             <label htmlFor="inputSearchEnterprise">Buscar Empresa</label>
             <X onClick={closeSearch} />
           </div>
-          <button className="add-enterprise">+ Nova Empresa</button>
+          <button className="default add-enterprise">+ Nova Empresa</button>
         </header>
         <div id="enterprises">
           {filteredCompanies.map((empresa) => (

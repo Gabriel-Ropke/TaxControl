@@ -3,6 +3,8 @@ import { Login } from "./pages/login/Login";
 import { Home } from "./pages/home/home";
 import { Enterprises } from "./pages/enterprises/Enterprises";
 import { Enterprise } from "./pages/enterprise/Enterprise";
+import { Reports } from "./pages/Reports/Reports";
+import { Configurations } from "./pages/Configurations/Configurations";
 
 function App() {
   return (
@@ -12,6 +14,8 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/enterprises" element={<Enterprises />} />
         <Route path="/enterprise/:id" element={<Enterprise />} />
+        <Route path="/reports" element={<Reports />} />
+        <Route path="/configurations" element={<Configurations />} />
       </Routes>
     </BrowserRouter>
   );

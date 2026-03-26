@@ -1,0 +1,57 @@
+div.card {
+  position: relative;
+  left: 0px;
+  display: flex;
+  flex-flow: column;
+  gap: 4px;
+  background: var(--item);
+  flex: 1;
+  border-radius: 10px;
+  padding: 15px 15px;
+  cursor: context-menu;
+  border: 2px solid transparent;
+  transition: 0.2s ease;
+  &.card--highlight {
+    border: 0;
+    border-top: 3px solid;
+    border-left: 3px solid transparent;
+
+    &:hover {
+      border: 0;
+      left: 3px;
+      border-top: 3px solid;
+      border-left: 3px solid var(--company-color);
+      span.value:not(.colored) {
+        color: var(--company-color);
+      }
+    }
+  }
+  &:hover {
+    border: 2px solid white;
+    span.value {
+      left: 10px;
+    }
+  }
+  span.title {
+    font-size: 14px;
+    color: gray;
+  }
+  span.value {
+    position: relative;
+    left: 0;
+    font-size: 28px;
+    font-weight: bold;
+    color: white;
+    transition: 0.2s ease;
+  }
+  span.alert {
+    font-size: 12px;
+    color: gray;
+    &.negative {
+      color: red;
+    }
+    &.positive {
+      color: green;
+    }
+  }
+}

@@ -9,7 +9,52 @@
   border: none;
   font-family: "Inter", sans-serif;
 }
+:root {
+  /*=============Variables=============*/
+  /* Variation Color */
+  --negative-color: #29ef60;
+  --positive-color: #ff4d39;
 
+  /*Tax Type Color */
+  --simples-color: #378add;
+  --simples-bg: rgba(55, 138, 221, 0.15);
+
+  --presumido-color: #ba7517;
+  --presumido-bg: rgba(186, 117, 23, 0.15);
+
+  --folha-color: #1d9e75;
+  --folha-bg: rgba(29, 158, 117, 0.15);
+
+  /* Colors */
+  --background: #101827;
+  --item: #1d283c;
+  --list-item: #2b364c;
+  --list-item-hover: #122344;
+  --button-hover: #314467;
+  --select-primary: #23324f;
+  --select-secondary: rgb(60, 76, 105);
+  --sidebar: #151e2f;
+
+  /*Light Mode*/
+  --title: white;
+  --primary-text: white;
+  --secondary-text: #626d95;
+
+  --background: #101827;
+  --item: #1d283c;
+  --list-item: #101622;
+  --list-item-hover: #122344;
+  --button-hover: #314467;
+  --select-primary: #23324f;
+  --select-secondary: rgb(60, 76, 105);
+  --sidebar: #151e2f;
+
+  --title: white;
+  --primary-text: white;
+  --secondary-text: #626d95;
+}
+
+/* Utilitários & Compartilhados*/
 .hoverTextDecorationEffect {
   position: relative;
   &::before {
@@ -28,6 +73,55 @@
     }
   }
 }
+div.resume-cards {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  height: 170px;
+  padding: 10px 30px;
+}
+
+/* Tax Type Badge*/
+
+.badge-simples {
+  background: var(--simples-bg);
+  color: var(--simples-color);
+  border: 1px solid var(--simples-color);
+}
+
+.badge-presumido {
+  background: var(--presumido-bg);
+  color: var(--presumido-color);
+  border: 1px solid var(--presumido-color);
+}
+
+.badge-folha {
+  background: var(--folha-bg);
+  color: var(--folha-color);
+  border: 1px solid var(--folha-color);
+}
+button.default {
+  border-radius: 8px;
+  color: white;
+  font-weight: bold;
+  background: none;
+  border: 1px solid transparent;
+  cursor: pointer;
+  background: var(--item);
+  transition: 0.2s ease;
+  &:hover {
+    background: var(--button-hover);
+    border: 1px solid white;
+  }
+}
 body {
-  background: rgb(16, 16, 16);
+  background: var(--background);
+}
+header {
+  width: 100%;
+  height: 100px;
+  border-bottom: 1px solid gray;
+  background: none;
 }
