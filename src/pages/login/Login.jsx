@@ -70,7 +70,7 @@ const InputField = ({
           <span
             className="toggle-visibility"
             onClick={() => setIsVisible((prev) => !prev)}
-            style={{ position: 'absolute', right: '12px', top: 'calc(50% + 13px)', transform: 'translateY(-50%)', cursor: 'pointer', color: 'var(--secondary-text)' }}
+            style={{ position: 'absolute', right: '12px', top: 'calc(50% + 14px)', transform: 'translateY(-50%)', cursor: 'pointer', color: 'var(--secondary-text)' }}
           >
             {isVisible ? <EyeOff size={20} /> : <Eye size={20} />}
           </span>
