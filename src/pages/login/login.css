@@ -56,10 +56,11 @@ body.login-page {
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-top: 10px;
+        margin: 10px 0;
         width: 100%;
         border-radius: 5px;
-        padding: 5px;
+        padding: 5px 10px;
+        font-size: 12px;
         background: var(--success);
         color: var(--primary-text);
         &.auth-error {
