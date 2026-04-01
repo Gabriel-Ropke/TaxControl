@@ -6,8 +6,8 @@ import { useCompaniesAndTaxes } from "../../hooks/useCompaniesAndTaxes";
 import { useToast } from "../../contexts/ToastContext";
 import { createTax, updateTax } from "../../services/api";
 import { taxFields, FIELD_LABELS } from "../../utils/taxUtils";
-import { formatCurrencyInput, parseCurrencyToFloat } from "../../utils/formatters";
-import { ChevronLeft, ChevronRight, Save } from "lucide-react";
+import { formatCurrencyInput, parseCurrencyToFloat, formatMonthLongPt } from "../../utils/formatters";
+import { ChevronLeft, ChevronRight, Save, X } from "lucide-react";
 import { MonthSinglePicker } from "../../components/MonthSinglePicker/MonthSinglePicker";
 import "./batchEdit.css";
 // Reutilizamos as classes visuais de grid complexo da página de importação onde possível
@@ -32,6 +32,7 @@ export function BatchEdit() {
   const [editableTaxes, setEditableTaxes] = useState({});
   const [isDirty, setIsDirty] = useState(false);
   const [pendingMonthSwitch, setPendingMonthSwitch] = useState(null);
+  const [carryOverValues, setCarryOverValues] = useState(null);
   
   // Guardamos qual foi a primeira edição para mostrar na mensagem bonitinha do alerta
   const [firstEditInfo, setFirstEditInfo] = useState(null);
@@ -76,6 +77,15 @@ export function BatchEdit() {
   // Popula o Grid sempre que o mês atual muda (e não há edição pendente)
   useEffect(() => {
     if (!currentMonth) return;
+
+    // Se há valores sendo transportados de outro mês, usamos eles
+    if (carryOverValues) {
+      setEditableTaxes(carryOverValues);
+      setCarryOverValues(null);
+      setIsDirty(true); // Marca como dirty para que o usuário salve no novo mês
+      return;
+    }
+
     const currentMonthFull = `${currentMonth}-01`;
     
     const newState = {};
@@ -90,7 +100,7 @@ export function BatchEdit() {
     setEditableTaxes(newState);
     setIsDirty(false);
     setFirstEditInfo(null);
-  }, [currentMonth, targetCompanies, taxes]);
+  }, [currentMonth, targetCompanies, taxes, carryOverValues]);
 
 
   const handleTaxChange = (compId, field, val) => {
@@ -209,24 +219,44 @@ export function BatchEdit() {
      }
   };
 
+  const handlePopupCarryOver = () => {
+    // Transporta os valores digitados para o novo mês sem salvar no mês atual
+    setCarryOverValues({ ...editableTaxes });
+    setCurrentMonth(pendingMonthSwitch);
+    setPendingMonthSwitch(null);
+  };
+
+  const handlePopupCancel = () => {
+    setPendingMonthSwitch(null);
+  };
+
   if (globalLoading || !currentMonth) return <div>Carregando Banco de Lotes...</div>;
+
+  const rawPendingMonth = pendingMonthSwitch ? formatMonthLongPt(pendingMonthSwitch) : "";
+  const prettyPendingMonth = rawPendingMonth ? rawPendingMonth.charAt(0).toUpperCase() + rawPendingMonth.slice(1) : "";
 
   return (
     <div className="import-page wizard-layout batch-edit-layout">
       
       {/* Pop-up Customizado do Usuário */}
       {pendingMonthSwitch && (
-         <div className="batch-popup-overlay">
-            <div className="batch-popup-card">
+         <div className="batch-popup-overlay" onClick={handlePopupCancel}>
+            <div className="batch-popup-card" onClick={e => e.stopPropagation()}>
+               <button className="popup-close-corner" onClick={handlePopupCancel}>
+                 <X size={18}/>
+               </button>
                <h3>Mudança de Mês Pendente</h3>
                <p>Você alterou o valor de <strong>{firstEditInfo?.field}</strong> da empresa <strong>{firstEditInfo?.company}</strong> (e possivelmente de outras).</p>
-               <p>O que deseja fazer com as alterações antes de ir para {pendingMonthSwitch}?</p>
+               <p>O que deseja fazer com as alterações antes de ir para <strong>{prettyPendingMonth}</strong>?</p>
                <div className="batch-popup-actions">
-                  <Button variant="secondary" className="discard-btn" onClick={handlePopupDiscard}>
-                    Descartar Alterações
+                  <Button fullWidth onClick={handlePopupSave} isLoading={loading}>
+                    Salvar e Avançar (Recomendado)
                   </Button>
-                  <Button onClick={handlePopupSave} isLoading={loading}>
-                    Salvar e Avançar
+                  <Button variant="secondary" fullWidth onClick={handlePopupCarryOver}>
+                    Mover tudo para {prettyPendingMonth}
+                  </Button>
+                  <Button variant="secondary" fullWidth className="discard-btn" onClick={handlePopupDiscard}>
+                    Descartar Alterações
                   </Button>
                </div>
             </div>
@@ -276,7 +306,7 @@ export function BatchEdit() {
                               <div className="hover-arrow-container">
                                  {idx > 0 && hasValue && (
                                     <button className="shift-btn shift-left" onClick={() => shiftValue(comp.id, idx, -1)}>
-                                      <ChevronLeft size={12}/>
+                                       <ChevronLeft size={12}/>
                                     </button>
                                  )}
                                  <input 
@@ -288,7 +318,7 @@ export function BatchEdit() {
                                  />
                                  {idx < taxFields.length - 1 && hasValue && (
                                     <button className="shift-btn shift-right" onClick={() => shiftValue(comp.id, idx, 1)}>
-                                      <ChevronRight size={12}/>
+                                       <ChevronRight size={12}/>
                                     </button>
                                  )}
                               </div>

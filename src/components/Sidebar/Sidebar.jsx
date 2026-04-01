@@ -17,9 +17,6 @@ export function Sidebar() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const displayName =
-    user?.user_metadata?.username ?? user?.email?.split("@")[0] ?? "Usuário";
-
   const handleLogout = async () => {
     const prefsToRemove = ['theme', 'accentColor', 'accentColorObj', 'currency', 'sidebarState'];
     prefsToRemove.forEach(key => localStorage.removeItem(key));

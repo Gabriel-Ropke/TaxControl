@@ -68,6 +68,7 @@ export async function signUp({ email, password, username }) {
     password,
     options: {
       data: { username: trimmed },
+      emailRedirectTo: `${window.location.origin}/auth/callback`,
     },
   });
   if (result.error)

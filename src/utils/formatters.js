@@ -92,15 +92,16 @@ export function formatBRLCompact(value) {
 }
 
 export function formatMonthShortPt(dateStr) {
-  return new Date(dateStr).toLocaleString("pt-BR", {
+  const [year, month, day] = dateStr.split("-");
+  return new Date(year, month - 1, day || 1).toLocaleString("pt-BR", {
     month: "short",
     year: "2-digit",
   });
 }
 
 export function formatMonthLongPt(dateStr) {
-  const [year, month] = dateStr.split("-");
-  return new Date(year, month - 1).toLocaleString("pt-BR", {
+  const [year, month, day] = dateStr.split("-");
+  return new Date(year, month - 1, day || 1).toLocaleString("pt-BR", {
     month: "long",
     year: "numeric",
   });
