@@ -34,7 +34,7 @@ div#enterpriseContainer {
         stroke: gray;
         transition: 0.2s ease;
         &:hover {
-          stroke: white;
+          stroke: var(--primary-text);
         }
       }
       span.enterprise-letter {
@@ -99,21 +99,21 @@ div#enterpriseContainer {
       align-items: center;
       width: 100%;
       height: 500px;
-      background: #2c2c2c;
+      background: var(--item);
       border-radius: 20px;
       span.charts-title {
         display: block;
         width: 100%;
         padding: 20px 40px;
-        color: rgb(171, 171, 171);
+        color: var(--secondary-text);
       }
     }
     div.table-wrapper {
       margin-top: 30px;
       width: 100%;
-      background: #2c2c2c;
+      background: var(--item);
       border-radius: 10px;
-      border: 1px solid rgb(194, 194, 194);
+      border: 1px solid var(--border);
       div.table-header {
         display: flex;
         justify-content: space-between;
@@ -123,7 +123,7 @@ div#enterpriseContainer {
           display: block;
           width: 100%;
           font-size: 14px;
-          color: rgb(194, 194, 194);
+          color: var(--secondary-text);
         }
         button.new-register {
           padding: 15px 40px;
@@ -136,7 +136,7 @@ div#enterpriseContainer {
         thead {
           tr {
             th {
-              color: rgb(194, 194, 194);
+              color: var(--secondary-text);
               font-weight: 500;
               font-size: 12px;
               text-transform: capitalize;
@@ -148,9 +148,9 @@ div#enterpriseContainer {
           th,
           td {
             text-align: center;
-            border-top: 1px solid rgb(194, 194, 194);
+            border-top: 1px solid var(--border);
             padding: 20px 10px;
-            color: white;
+            color: var(--primary-text);
             span {
               &.negative {
                 color: var(--negative-color);

@@ -9,6 +9,7 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import { getTotalFromRecord, taxFields } from "../../utils/taxUtils";
+import { formatMonthShortPt, formatBRL } from "../../utils/formatters";
 
 ChartJS.register(
   CategoryScale,
@@ -19,18 +20,19 @@ ChartJS.register(
   Filler,
 );
 
-export function TaxChart({ taxes, color }) {
+function valueForField(record, field) {
+  if (field == null || field === "total") return getTotalFromRecord(record);
+  if (!taxFields.includes(field)) return getTotalFromRecord(record);
+  return record?.[field] ?? 0;
+}
+
+export function TaxChart({ taxes, color, field = "total" }) {
   const sorted = [...taxes].sort((a, b) => new Date(a.date) - new Date(b.date));
   const toHsla = (hsl, alpha) =>
     hsl.replace("hsl(", "hsla(").replace(")", `, ${alpha})`);
-  const labels = sorted.map((t) =>
-    new Date(t.date).toLocaleString("pt-BR", {
-      month: "short",
-      year: "2-digit",
-    }),
-  );
+  const labels = sorted.map((t) => formatMonthShortPt(t.date));
 
-  const values = sorted.map((t) => getTotalFromRecord(t));
+  const values = sorted.map((t) => valueForField(t, field));
 
   const data = {
     labels,
@@ -72,16 +74,10 @@ export function TaxChart({ taxes, color }) {
         callbacks: {
           title: (items) =>
             sorted[items[0].dataIndex]
-              ? new Date(sorted[items[0].dataIndex].date).toLocaleString(
-                  "pt-BR",
-                  {
-                    month: "short",
-                    year: "2-digit",
-                  },
-                )
+              ? formatMonthShortPt(sorted[items[0].dataIndex].date)
               : "",
           label: (item) =>
-            `R$ ${item.raw.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`,
+            formatBRL(item.raw),
         },
       },
     },
@@ -100,7 +96,7 @@ export function TaxChart({ taxes, color }) {
         grid: { color: "#ffffff11" },
         ticks: {
           color: "#aaa",
-          maxTicksLimit: 6, // <- limita a quantidade de ticks
+          maxTicksLimit: 6,
           callback: (value) => `R$${(value / 1000).toFixed(1)}k`,
         },
       },
@@ -109,9 +105,7 @@ export function TaxChart({ taxes, color }) {
 
   return (
     <div style={{ width: "95%", height: "85%" }}>
-      {" "}
-      {/* <- controla o tamanho aqui */}
-      <Line key={color} data={data} options={options} />
+      <Line key={`${color}-${field}`} data={data} options={options} />
     </div>
   );
 }

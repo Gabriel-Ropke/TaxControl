@@ -1,12 +1,13 @@
 import "./resumeCard.css";
 
-export function ResumeCard({ title, value, percent, date, color, valueColor }) {
+export function ResumeCard({ title, value, percent, date, color, valueColor, clickable, active, onClick }) {
   const isPositive = percent > 0;
 
   return (
     <div
-      className={`card ${color ? "card--highlight" : ""}`}
+      className={`card ${color ? "card--highlight" : ""} ${clickable ? "clickable" : ""} ${active ? "active" : ""}`}
       style={color ? { borderTopColor: color } : {}}
+      onClick={onClick}
     >
       <span className="title">{title}</span>
       <span
@@ -17,13 +18,13 @@ export function ResumeCard({ title, value, percent, date, color, valueColor }) {
       </span>
 
       {percent != null && (
-        <span className={`alert ${isPositive ? "positive" : "negative"}`}>
-          {isPositive ? "+" : ""}
-          {percent}% vs mês anterior
+        <span className={`alert ${percent >= 0 ? "positive" : "negative"}`}>
+          {percent >= 0 ? "+" : ""}
+          {Math.abs(percent).toFixed(1)}% {date}
         </span>
       )}
 
-      {date && <span className="alert">{date}</span>}
+      {date && percent == null && <span className="alert colored" style={valueColor ? { color: valueColor } : {}}>{date}</span>}
     </div>
   );
 }

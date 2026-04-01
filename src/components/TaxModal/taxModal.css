@@ -1,0 +1,166 @@
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+div.tax-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease-out;
+}
+
+div.tax-modal-content {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease-out;
+  overflow: hidden;
+
+  header.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 30px;
+    border-bottom: 1px solid var(--border);
+    background: var(--item);
+
+    h3 {
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--title);
+      margin: 0;
+    }
+
+    button.close-btn {
+      background: none;
+      border: none;
+      color: var(--secondary-text);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px;
+      transition: color 0.1s ease;
+
+      &:hover {
+        color: var(--danger);
+      }
+    }
+  }
+
+  div.modal-body {
+    padding: 20px 30px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    /* Estilização da scrollbar para o modal */
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: var(--border-strong);
+      border-radius: 4px;
+    }
+    &::-webkit-scrollbar-thumb:hover {
+      background: var(--secondary-text);
+    }
+
+    div.field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+
+      label {
+        font-size: 13px;
+        color: var(--secondary-text);
+        font-weight: 500;
+      }
+      
+      input[type="month"] {
+        width: 100%;
+        height: 45px;
+        padding: 0 16px;
+        background: var(--input);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        color: var(--primary-text);
+        font-size: 15px;
+        transition: all var(--transition-default);
+        color-scheme: dark; /* Force dark calendar icon in supported browsers if in dark mode */
+
+        &:focus {
+          border-color: var(--color-accent);
+          outline: none;
+        }
+      }
+    }
+
+    div.tax-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+  }
+
+  div.modal-footer {
+    padding: 20px 30px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    background: var(--item);
+
+    div.actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+
+      .btn-cancel {
+        background: var(--button-secondary);
+        border: 1px solid var(--border);
+        color: var(--primary-text);
+
+        &:hover {
+          background: var(--button-hover);
+          border-color: var(--border-hover);
+        }
+      }
+    }
+
+    div.history-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 11px;
+      color: var(--secondary-text);
+      padding-top: 10px;
+      border-top: 1px dashed var(--border);
+    }
+  }
+}

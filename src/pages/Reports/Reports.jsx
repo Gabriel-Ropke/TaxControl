@@ -1,66 +1,22 @@
 import { useEffect, useRef, useState, useMemo } from "react";
-import { Sidebar } from "../../components/Sidebar/Sidebar";
-import { getCompanies, getTaxes } from "../../services/api";
+import { PageWithSidebar } from "../../components/PageWithSidebar/PageWithSidebar";
 import { Chart } from "chart.js/auto";
 import { generateColor } from "../../utils/generateColor";
+import {
+  FIELD_LABELS,
+  getMonthOptionsFromTaxes,
+  getTotalFromRecord,
+} from "../../utils/taxUtils";
+import { formatBRL, formatBRLCompact, getInitials } from "../../utils/formatters";
+import { useCompaniesAndTaxes } from "../../hooks/useCompaniesAndTaxes";
 import "./reports.css";
 import { useNavigate } from "react-router-dom";
 
-// ─── Constantes ────────────────────────────────────────────────────────────────
-
-const TAX_FIELDS = [
-  "simple",
-  "pis",
-  "cofins",
-  "csll",
-  "irpj",
-  "iss_icms",
-  "efd_reinf",
-];
-
-const FIELD_LABELS = {
-  simple: "Simples",
-  pis: "PIS",
-  cofins: "COFINS",
-  csll: "CSLL",
-  irpj: "IRPJ",
-  iss_icms: "ISS/ICMS",
-  efd_reinf: "EFD Reinf",
-};
-
-const DISCREPANCY_THRESHOLD = 15; // variação mínima para ser considerada discrepância
-
-// ─── Helpers ───────────────────────────────────────────────────────────────────
-
-const getTotalFromRecord = (record) =>
-  TAX_FIELDS.reduce((sum, field) => sum + (record?.[field] ?? 0), 0);
-
-const formatCurrency = (value) =>
-  value >= 1000
-    ? "R$ " + (value / 1000).toFixed(0) + "k"
-    : "R$ " + Math.round(value);
-
-const formatDate = (dateStr) =>
-  new Date(dateStr).toLocaleString("pt-BR", {
-    month: "short",
-    year: "2-digit",
-  });
-
-const getInitials = (name) =>
-  name
-    .split(" ")
-    .map((w) => w[0])
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
-
-// ─── Componente Principal ──────────────────────────────────────────────────────
+const DISCREPANCY_THRESHOLD = 15;
 
 export function Reports() {
   const navigate = useNavigate();
-  const [companies, setCompanies] = useState([]);
-  const [taxes, setTaxes] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { companies, taxes, loading } = useCompaniesAndTaxes();
   const [activeMonthIdx, setActiveMonthIdx] = useState(0);
   const [activeField, setActiveField] = useState("simple");
 
@@ -68,34 +24,10 @@ export function Reports() {
   const chartInstance = useRef(null);
   const scrollerRef = useRef(null);
 
-  // ─── Fetch ───────────────────────────────────────────────────────────────────
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [companiesData, taxesData] = await Promise.all([
-          getCompanies(),
-          getTaxes(),
-        ]);
-        setCompanies(companiesData);
-        setTaxes(taxesData);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
-
-  // ─── Meses disponíveis (derivado dos dados) ──────────────────────────────────
-
-  const availableMonths = useMemo(() => {
-    const dates = [...new Set(taxes.map((t) => t.date))].sort(
-      (a, b) => new Date(a) - new Date(b),
-    );
-    return dates.map((date) => ({ date, label: formatDate(date) }));
-  }, [taxes]);
+  const availableMonths = useMemo(
+    () => getMonthOptionsFromTaxes(taxes, { style: "short" }),
+    [taxes],
+  );
 
   // Inicializa no mês mais recente quando os dados chegarem
   useEffect(() => {
@@ -208,8 +140,7 @@ export function Reports() {
           tooltip: {
             callbacks: {
               label: (item) =>
-                "R$ " +
-                item.raw.toLocaleString("pt-BR", { minimumFractionDigits: 2 }),
+                formatBRL(item.raw),
             },
           },
         },
@@ -218,7 +149,11 @@ export function Reports() {
             ticks: {
               color: "#444",
               font: { size: 11 },
-              callback: (v) => "R$" + (v / 1000).toFixed(0) + "k",
+              callback: (v) => {
+                const currency = localStorage.getItem("currency") || "BRL";
+                const symbols = { BRL: "R$", USD: "$", EUR: "€", GBP: "£", JPY: "¥" };
+                return (symbols[currency] || "R$") + (v / 1000).toFixed(0) + "k";
+              },
             },
             grid: { color: "#1a1a1a" },
             border: { display: false },
@@ -266,8 +201,7 @@ export function Reports() {
   if (loading) return <span className="loading">Carregando...</span>;
 
   return (
-    <>
-      <Sidebar />
+    <PageWithSidebar>
       <div id="reportsContainer">
         {/* Header */}
         <header className="reports-header">
@@ -470,7 +404,7 @@ export function Reports() {
                       <div className="rank-name-row">
                         <span className="rank-name">{company.name}</span>
                         <span className="rank-value">
-                          {formatCurrency(total)}
+                          {formatBRLCompact(total)}
                         </span>
                       </div>
                       <div className="rank-bar-wrap">
@@ -490,6 +424,6 @@ export function Reports() {
           </div>
         </div>
       </div>
-    </>
+    </PageWithSidebar>
   );
 }

@@ -9,8 +9,18 @@ div.card {
   border-radius: 10px;
   padding: 15px 15px;
   cursor: context-menu;
-  border: 2px solid transparent;
+  height: 120px;
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
   transition: 0.2s ease;
+  &:hover {
+    span.value {
+      left: 10px;
+    }
+    span.title {
+      color: var(--primary-text);
+    }
+  }
   &.card--highlight {
     border: 0;
     border-top: 3px solid;
@@ -26,32 +36,43 @@ div.card {
       }
     }
   }
-  &:hover {
-    border: 2px solid white;
-    span.value {
-      left: 10px;
+  &.clickable {
+    cursor: pointer;
+    border-left: 3px solid var(--clickable-border);
+    &:hover {
+      border-left-color: var(--color-accent);
+    }
+    &.active {
+      border-left-color: var(--color-accent);
     }
   }
   span.title {
     font-size: 14px;
-    color: gray;
+    color: var(--secondary-text);
   }
   span.value {
     position: relative;
     left: 0;
-    font-size: 28px;
+    font-size: 32px;
     font-weight: bold;
-    color: white;
+    color: var(--title);
     transition: 0.2s ease;
+
+    &.colored {
+       color: var(--negative-color);
+    }
   }
   span.alert {
-    font-size: 12px;
-    color: gray;
+    font-size: 13px;
+    color: var(--secondary-text);
     &.negative {
-      color: red;
+      color: var(--negative-color, #ef4444);
     }
     &.positive {
-      color: green;
+      color: var(--positive-color, #22c55e);
+    }
+    &.colored {
+       font-weight: 500;
     }
   }
 }

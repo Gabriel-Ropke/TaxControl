@@ -1,8 +1,8 @@
 import "./sidebar.css";
-import { House, Building2, BarChart2, Settings, Menu } from "lucide-react";
+import { House, Building2, BarChart2, Settings, Menu, LogOut } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import pfp from "../../assets/pfp.jpeg";
+import { useAuth } from "../../contexts/AuthContext";
 
 const navItems = [
   { label: "Home", path: "/home", icon: House },
@@ -12,13 +12,25 @@ const navItems = [
 ];
 
 export function Sidebar() {
+  const { user, signOut } = useAuth();
   const [activeSidebar, setActiveSidebar] = useState(true);
   const location = useLocation();
   const navigate = useNavigate();
+
+  const displayName =
+    user?.user_metadata?.username ?? user?.email?.split("@")[0] ?? "Usuário";
+
+  const handleLogout = async () => {
+    const prefsToRemove = ['theme', 'accentColor', 'accentColorObj', 'currency', 'sidebarState'];
+    prefsToRemove.forEach(key => localStorage.removeItem(key));
+    await signOut();
+    navigate("/", { replace: true });
+  };
+
   useEffect(() => {
     document.documentElement.style.setProperty(
       "--sidebar-width",
-      activeSidebar ? "320px" : "100px",
+      activeSidebar ? "250px" : "100px",
     );
   }, [activeSidebar]);
 
@@ -49,13 +61,10 @@ export function Sidebar() {
           </ul>
         </nav>
         <div className="bottom">
-          <div className="img-container">
-            <img src={pfp} alt="" className="profile-picture" />
-          </div>
-          <div className="text-container">
-            <span className="username">Guilherme</span>
-            <span className="user-role">Admin</span>
-          </div>
+          <button className="logout-btn" onClick={handleLogout}>
+            <LogOut size={20} />
+            <span>Logout</span>
+          </button>
         </div>
       </aside>
     </>

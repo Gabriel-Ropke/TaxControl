@@ -1,0 +1,48 @@
+.ui-input-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+.ui-input-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--secondary-text);
+}
+.ui-input {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: var(--input);
+  color: var(--primary-text);
+  border: 1px solid var(--border);
+  transition: border-color var(--transition-default), background-color var(--transition-default);
+  font-size: 0.875rem;
+}
+.ui-input::placeholder {
+  color: var(--placeholder-text);
+}
+.ui-input:hover:not(:disabled) {
+  background: var(--input-hover);
+}
+.ui-input:focus {
+  border-color: var(--border-focus);
+}
+/* O border-color já serve como feedback visual. Removemos o outline forçado, pois ele buga em mouses no Chrome/Vite */
+.ui-input:focus-visible {
+  outline: none;
+}
+.ui-input:disabled {
+  background: var(--button-secondary);
+  color: var(--disabled-text);
+  cursor: not-allowed;
+}
+.ui-input.error {
+  border-color: var(--danger);
+  background: var(--danger-bg);
+}
+.ui-input-error-msg {
+  font-size: 0.75rem;
+  color: var(--danger);
+  margin-top: 4px;
+}

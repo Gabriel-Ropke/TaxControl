@@ -3,7 +3,7 @@ div#root {
   aside {
     overflow: hidden;
     position: fixed;
-    width: 320px;
+    width: 250px;
     height: 100vh;
     background: var(--sidebar);
     transition: width 0.3s ease;
@@ -17,7 +17,7 @@ div#root {
       flex-flow: column;
       height: 100px;
       padding-left: 20px;
-      border-bottom: 1px solid gray;
+      border-bottom: 1px solid var(--border);
       cursor: pointer;
       width: calc(100% + 80px);
       transition: 0.3s ease;
@@ -29,17 +29,17 @@ div#root {
         padding: 10px;
         height: 60px;
         width: 60px;
-        color: white;
+        color: var(--title);
         border-radius: 10px;
 
         &:hover {
-          background: rgba(255, 255, 255, 0.2);
+          background: var(--button-hover);
         }
       }
 
       h2 {
         font-weight: 500;
-        color: white;
+        color: var(--title);
         font-size: 24px;
         white-space: nowrap;
         transition: opacity 0.3s ease;
@@ -48,7 +48,7 @@ div#root {
 
       span {
         font-size: 14px;
-        color: gray;
+        color: var(--tertiary-text);
         text-transform: lowercase;
         white-space: nowrap;
         transition: opacity 0.3s ease;
@@ -87,12 +87,15 @@ div#root {
             height: 26px;
             transform: translate(0, -50%);
             transition: 0.2s ease;
+            z-index: 1;
           }
 
           span {
+            position: relative;
             white-space: nowrap;
             max-width: 200px; /* qualquer valor maior que o texto */
             opacity: 1;
+            z-index: 1;
           }
 
           &::after {
@@ -102,32 +105,57 @@ div#root {
             left: 0;
             width: 0;
             height: 100%;
-            background: rgba(255, 255, 255, 0);
-            transition: 0.3s ease-out;
+            background: var(--button-hover);
+            transition: width 0.3s ease-out;
             z-index: 0;
           }
 
+          &::before {
+            content: "";
+            position: absolute;
+            top: 100%;
+            transform: translateY(-2px);
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--color-accent);
+            transition: width 0.4s ease-out;
+            z-index: 2;
+          }
+
           &.active {
-            border-left: 2px solid rgb(255, 176, 29);
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
+            background: var(--button-hover);
+            color: var(--primary-text);
+
+            &::before {
+               content: "";
+               position: absolute;
+               left: 0;
+               top: 0;
+               width: 3px;
+               height: 100%;
+               background: var(--color-accent);
+               z-index: 2;
+            }
 
             &:hover {
-              color: rgb(255, 176, 29);
-              background: rgba(255, 176, 29, 0.2);
+              color: var(--color-accent);
+              background: var(--accent-bg);
             }
           }
 
           &:not(.active):hover {
-            color: white;
+            color: var(--primary-text);
 
             &::after {
               width: 100%;
-              background: rgba(255, 255, 255, 0.2);
+            }
+            &::before {
+              width: 100%;
             }
 
             svg {
-              stroke: white;
+              stroke: var(--primary-text);
             }
           }
         }
@@ -140,47 +168,38 @@ div#root {
       left: 0;
       display: flex;
       align-items: center;
+      justify-content: center;
       padding: 30px;
       gap: 10px;
       height: 80px;
       width: 100%;
-      border-top: 1px solid gray;
+      border-top: 1px solid var(--border);
       overflow: hidden;
       transition: 0.3s ease;
 
-      div.img-container {
-        min-width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        cursor: pointer;
-        background: white;
-        transition: 0.4s ease;
-        box-shadow: 0px 0px 0px 0px rgba(255, 176, 29, 0.6);
-        overflow: hidden;
-        img {
-          width: 100%;
-          height: 100%;
-        }
-
-        &:hover {
-          box-shadow: 0px 0px 15px 0px rgba(255, 176, 29, 0.6);
-        }
-      }
-
-      div.text-container {
+      button.logout-btn {
+        position: relative;
         display: flex;
-        flex-flow: column;
-        transition: opacity 0.3s ease;
-
-        span.username {
-          font-size: 20px;
-          color: white;
-          text-transform: capitalize;
+        align-items: center;
+        justify-content: center;
+        width: 80%;
+        height: 50px;
+        padding: 10px 20px;
+        gap: 10px;
+        border: none;
+        color: white;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 500;
+        transition: 0.3s ease;
+        background: rgba(255, 255, 255, 0.02);
+        
+        &:hover {
+          background: var(--danger);
         }
-
-        span.user-role {
-          text-transform: lowercase;
-          color: gray;
+        span {
+          white-space: nowrap;
         }
       }
     }
@@ -193,17 +212,17 @@ div#root {
         align-items: center;
         padding-left: 0;
         justify-content: center;
-        border-bottom: none;
-        height: 99px;
+        border-bottom-color: transparent;
+        height: 100px;
         left: -100%;
         &::before {
           content: "";
           position: absolute;
-          top: 100%;
+          top: calc(100% - 1px);
           left: 20px;
           width: 100%;
           height: 1px;
-          background: gray;
+          background: var(--border);
         }
 
         svg.menu {
@@ -212,11 +231,11 @@ div#root {
           left: calc(100% - 60px);
           height: 60px;
           width: 60px;
-          color: white;
+          color: var(--title);
           border-radius: 10px;
 
           &:hover {
-            background: rgba(255, 255, 255, 0.2);
+            background: var(--button-hover);
           }
         }
 
@@ -236,7 +255,7 @@ div#root {
             padding: 0;
             height: 60px;
             border-radius: 8px;
-            border-left: none;
+            border: none;
 
             span {
               opacity: 0;
@@ -250,24 +269,24 @@ div#root {
             }
 
             &.active {
-              background: rgba(255, 255, 255, 0.2);
-              border: 1px solid white;
+              background: var(--button-hover);
+              border: 1px solid var(--border-focus);
               svg {
-                stroke: white;
+                stroke: var(--primary-text);
               }
 
               &:hover {
-                background: rgba(255, 176, 29, 0.2);
-                border: 1px solid orange;
+                background: var(--button-hover);
+                border: 1px solid var(--border-focus);
 
                 svg {
-                  stroke: orange;
+                  stroke: var(--border-focus);
                 }
               }
             }
 
             &:not(.active):hover {
-              background: rgba(255, 255, 255, 0.2);
+              background: var(--button-hover);
             }
           }
         }
@@ -277,7 +296,7 @@ div#root {
         justify-content: center;
         padding: 10px;
 
-        div.text-container {
+        button.logout-btn span {
           display: none;
         }
       }

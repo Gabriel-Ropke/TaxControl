@@ -16,7 +16,7 @@ div#reportsContainer {
     width: 100%;
     height: 100px;
     padding: 20px;
-    border-bottom: 1px solid var(--secondary-text);
+    border-bottom: 1px solid var(--border);
     h1 {
       font-size: 22;
       font-weight: 500;
@@ -55,19 +55,19 @@ div#reportsContainer {
       span.month-item {
         white-space: nowrap;
         font-size: 12px;
-        color: #494949;
+        color: var(--tertiary-text);
         transition: all 0.3s ease;
         flex-shrink: 0;
         cursor: pointer;
 
         &.near {
           font-size: 14px;
-          color: #666;
+          color: var(--secondary-text);
         }
 
         &.active {
           font-size: 18px;
-          color: white;
+          color: var(--primary-text);
           font-weight: 500;
         }
       }
@@ -79,7 +79,7 @@ div#reportsContainer {
         width: 4px;
         height: 4px;
         border-radius: 50%;
-        background: #2a2a2a;
+        background: var(--button-hover);
         cursor: pointer;
         transition: all 0.3s ease;
         &:hover {
@@ -88,7 +88,7 @@ div#reportsContainer {
         }
 
         &.active {
-          background: white;
+          background: var(--primary-text);
           width: 16px;
           border-radius: 2px;
         }
@@ -108,13 +108,14 @@ div#reportsContainer {
       transform: translateY(-50%);
       width: 100%;
       height: 1px;
-      background: var(--secondary-text);
+      background: var(--border-strong);
       z-index: 0;
     }
     span.divider-label {
       background: var(--background);
       padding: 5px 15px;
-      color: white;
+      color: var(--title);
+      font-weight: 500;
       z-index: 1;
     }
   }
@@ -134,7 +135,7 @@ div#reportsContainer {
       transition: 0.1s ease;
 
       &:hover {
-        border-left: 5px solid white;
+        border-left: 5px solid var(--color-accent);
       }
       div.anomaly-card-header {
         display: flex;
@@ -144,7 +145,7 @@ div#reportsContainer {
         span.anomaly-title {
           font-size: 14px;
           font-weight: 500;
-          color: white;
+          color: var(--primary-text);
         }
       }
       ul.anomaly-list {
@@ -196,7 +197,7 @@ div#reportsContainer {
 
             span.anomaly-name {
               font-size: 13px;
-              color: white;
+              color: var(--primary-text);
               font-weight: 500;
             }
 
@@ -229,7 +230,7 @@ div#reportsContainer {
     div.chart-card {
       position: relative;
       background: var(--item);
-      box-shadow: -3px 3px 0 0px white;
+      box-shadow: -3px 3px 0 0px var(--border-focus);
       border-radius: 14px;
       padding: 24px;
       top: 0;
@@ -239,8 +240,8 @@ div#reportsContainer {
       &:hover {
         top: -10px;
         box-shadow:
-          -2px 2px 6px 0 rgba(0, 0, 0, 0.99),
-          -12px 12px 0 0 white;
+          -2px 2px 6px 0 rgba(0, 0, 0, 0.2),
+          -12px 12px 0 0 var(--color-accent);
       }
 
       div.chart-header {
@@ -252,7 +253,7 @@ div#reportsContainer {
         h2.chart-title {
           font-size: 14px;
           font-weight: 500;
-          color: white;
+          color: var(--title);
         }
 
         p.chart-sub {
@@ -263,7 +264,7 @@ div#reportsContainer {
       }
       select.field-select {
         background: var(--select-primary);
-        color: #ccc;
+        color: var(--primary-text);
         padding: 7px 12px;
         border-radius: 8px;
         font-size: 12px;
@@ -289,7 +290,7 @@ div#reportsContainer {
 
           span.rank-pos {
             font-size: 11px;
-            color: #444;
+            color: var(--tertiary-text);
             width: 16px;
             flex-shrink: 0;
           }
@@ -305,18 +306,18 @@ div#reportsContainer {
 
               span.rank-name {
                 font-size: 12px;
-                color: #888;
+                color: var(--secondary-text);
               }
               span.rank-value {
                 font-size: 12px;
-                color: white;
+                color: var(--primary-text);
                 font-weight: 500;
               }
             }
 
             div.rank-bar-wrap {
               height: 4px;
-              background: #1e1e1e;
+              background: var(--input);
               border-radius: 2px;
               overflow: hidden;
 
@@ -343,9 +344,9 @@ div#reportsContainer {
     }
 
     &.tag-neutral {
-      background: #1a1a1a;
-      color: #666;
-      border: 0.5px solid #2a2a2a;
+      background: var(--list-item);
+      color: var(--secondary-text);
+      border: 0.5px solid var(--border);
     }
   }
   .empty {
@@ -356,7 +357,7 @@ div#reportsContainer {
   }
 
   .loading {
-    color: #666;
+    color: var(--secondary-text);
     font-size: 13px;
     padding: 32px;
   }

@@ -21,17 +21,17 @@ div.enterprise {
     transform: translateY(-10px);
     div.bottom {
       span.last-register {
-        color: white;
+        color: var(--primary-text);
       }
       svg {
-        stroke: white;
+        stroke: var(--primary-text);
         transform: translateX(10px);
       }
     }
     div.top {
       div.value {
         span.date {
-          color: white;
+          color: var(--primary-text);
         }
       }
     }
@@ -61,7 +61,7 @@ div.enterprise {
       }
       span.enterprise-name {
         grid-area: name;
-        color: white;
+        color: var(--title);
         font-weight: bold;
         text-transform: capitalize;
       }
@@ -91,7 +91,7 @@ div.enterprise {
         transition: 0.2s ease;
       }
       span.total-value {
-        color: white;
+        color: var(--title);
         font-weight: bold;
         font-size: 24px;
       }
@@ -99,10 +99,10 @@ div.enterprise {
         font-weight: 400;
         font-size: 12px;
         &.negative {
-          color: red;
+          color: var(--negative-color, red);
         }
         &.positive {
-          color: green;
+          color: var(--positive-color, green);
         }
       }
     }

@@ -1,78 +1,225 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
 * {
   margin: 0;
   padding: 0;
   list-style: none;
   text-decoration: none;
   box-sizing: border-box;
-  outline: none;
-  border: none;
   font-family: "Inter", sans-serif;
+  /* Removido o outline: none para restaurar acessibilidade e navegação por teclado */
 }
+
+/* Foco global de acessibilidade (apenas para botões, links e containers interativos, ignorando inputs) */
+button:focus-visible, a:focus-visible, [role="button"]:focus-visible, [tabindex]:focus-visible {
+  outline: 2px solid var(--color-accent) !important;
+  outline-offset: 2px;
+  border-radius: 4px;
+  transition: outline var(--transition-default);
+}
+
+/* Remove outline nativo de absolutamente tudo. Campos de texto indicam foco por meio de suas bordas customizadas nas páginas. */
+*:focus, *:focus-visible, input:focus, input:focus-visible, textarea:focus, select:focus {
+  outline: none !important;
+}
+
 :root {
-  /*=============Variables=============*/
-  /* Variation Color */
-  --negative-color: #29ef60;
-  --positive-color: #ff4d39;
+  /* ============= Variáveis Globais ============= */
+  --transition-default: 0.2s ease-in-out;
 
-  /*Tax Type Color */
-  --simples-color: #378add;
-  --simples-bg: rgba(55, 138, 221, 0.15);
+  /* Accent Color (Default: Orange) */
+  --color-accent: #ea580c;
+  --accent-hover: #c2410c;
+  --accent-bg: rgba(234, 88, 12, 0.1);
+  --accent-border: rgba(234, 88, 12, 0.3);
 
-  --presumido-color: #ba7517;
-  --presumido-bg: rgba(186, 117, 23, 0.15);
+  /* Status Colors */
+  --success: #22c55e;
+  --success-bg: rgba(34, 197, 94, 0.1);
+  --success-border: rgba(34, 197, 94, 0.3);
+  --danger: #ef4444;
 
-  --folha-color: #1d9e75;
-  --folha-bg: rgba(29, 158, 117, 0.15);
+  /* Variation Colors */
+  --positive-color: #22c55e;
+  --negative-color: #ef4444;
+  --danger-bg: rgba(239, 68, 68, 0.1);
+  --danger-border: rgba(239, 68, 68, 0.3);
+  --warning: #f59e0b;
+  --warning-bg: rgba(245, 158, 11, 0.1);
+  --warning-border: rgba(245, 158, 11, 0.3);
 
-  /* Colors */
-  --background: #101827;
-  --item: #1d283c;
-  --list-item: #2b364c;
-  --list-item-hover: #122344;
-  --button-hover: #314467;
-  --select-primary: #23324f;
-  --select-secondary: rgb(60, 76, 105);
-  --sidebar: #151e2f;
+  /* Tax Type Colors */
+  --simples-color: #3b82f6; 
+  --simples-bg: rgba(59, 130, 246, 0.1);
+  --presumido-color: #f59e0b;
+  --presumido-bg: rgba(245, 158, 11, 0.1);
+  --folha-color: #10b981;
+  --folha-bg: rgba(16, 185, 129, 0.1);
 
-  /*Light Mode*/
-  --title: white;
-  --primary-text: white;
-  --secondary-text: #626d95;
+  /* ============= Light Mode (Default) ============= */
+  --background: #eff1f5;
+  --sidebar: #ffffff;
+  --card: #ffffff;
+  --card-hover: #f8fafc;
+  --item: #ffffff;
+  --list-item: #ffffff;
+  --list-item-hover: #f3f4f6;
+  --list-item-border: #e5e7eb;
 
-  --background: #101827;
-  --item: #1d283c;
-  --list-item: #101622;
-  --list-item-hover: #122344;
-  --button-hover: #314467;
-  --select-primary: #23324f;
-  --select-secondary: rgb(60, 76, 105);
-  --sidebar: #151e2f;
+  --input: #ffffff;
+  --input-hover: #f8fafc;
+  --select-primary: #ffffff;
+  --select-secondary: #f8fafc;
+  
+  --table-header-bg: var(--color-accent);
+  --table-header: var(--color-accent);
+  --table-header-text: #ffffff;
+  --overlay: rgba(0, 0, 0, 0.4);
 
-  --title: white;
-  --primary-text: white;
-  --secondary-text: #626d95;
+  /* Borders / Actions */
+  --border: #e5e7eb;
+  --border-hover: #d1d5db;
+  --border-focus: var(--color-accent);
+  --border-strong: #9ca3af;
+  --border-subtle: #f3f4f6;
+  --clickable-border: #e5e7eb;
+
+  --button-hover: #e5e7eb;
+  --button-secondary: #f3f4f6;
+  --button-secondary-hover: #e5e7eb;
+  --button-danger: rgba(239, 68, 68, 0.1);
+  --button-danger-hover: rgba(239, 68, 68, 0.2);
+  --button-danger-border: rgba(239, 68, 68, 0.3);
+
+  /* Text */
+  --title: #111827;
+  --primary-text: #1f2937;
+  --secondary-text: #4b5563;
+  --tertiary-text: #9ca3af;
+  --placeholder-text: #6b7280;
+  --disabled-text: #d1d5db;
+  --link-text: var(--color-accent);
+
+  color-scheme: light;
 }
 
-/* Utilitários & Compartilhados*/
+/* ============= Dark Mode ============= */
+/* Usando classe .dark na raiz HTML pra suportar toggle manual */
+html.dark,
+[data-theme="dark"] {
+  --background: #0a0a0a;
+  --sidebar: #111111;
+  --card: #161616;
+  --card-hover: #1c1c1c;
+  --item: #141414;
+  --list-item: #1a1a1a;
+  --list-item-hover: #1f1f1f;
+  --list-item-border: #333333;
+
+  --input: #1e1e1e;
+  --input-hover: #242424;
+  --select-primary: #1a1a1a;
+  --select-secondary: #202020;
+  
+  --table-header-bg: var(--color-accent);
+  --table-header: var(--color-accent);
+  --table-header-text: #ffffff;
+  --overlay: rgba(0, 0, 0, 0.7);
+
+  /* Borders / Actions */
+  --border: #222222;
+  --border-hover: #333333;
+  --border-focus: var(--color-accent);
+  --border-strong: #555555;
+  --border-subtle: #1a1a1a;
+  --clickable-border: #333333;
+
+  --button-hover: #2a2a2a;
+  --button-secondary: #1e1e1e;
+  --button-secondary-hover: #2a2a2a;
+
+  /* Text */
+  --title: #ffffff;
+  --primary-text: #e8e8e8;
+  --secondary-text: #888888;
+  --tertiary-text: #555555;
+  --placeholder-text: #3a3a3a;
+  --disabled-text: #2e2e2e;
+  
+  color-scheme: dark;
+}
+
+/* Dark mode do sistema se o usuário não alterou manualmente */
+@media (prefers-color-scheme: dark) {
+  html:not(.light):not([data-theme="light"]) {
+    --background: #0a0a0a;
+    --sidebar: #111111;
+    --card: #161616;
+    --card-hover: #1c1c1c;
+    --item: #141414;
+    --list-item: #1a1a1a;
+    --list-item-hover: #1f1f1f;
+    --list-item-border: #333333;
+    --input: #1e1e1e;
+    --input-hover: #242424;
+    --select-primary: #1a1a1a;
+    --select-secondary: #202020;
+    --table-header-bg: var(--color-accent);
+    --table-header: var(--color-accent);
+    --table-header-text: #ffffff;
+    --overlay: rgba(0, 0, 0, 0.7);
+    --border: #222222;
+    --border-hover: #333333;
+    --border-focus: var(--color-accent);
+    --border-strong: #555555;
+    --border-subtle: #1a1a1a;
+    --button-hover: #2a2a2a;
+    --button-secondary: #1e1e1e;
+    --button-secondary-hover: #2a2a2a;
+    --title: #ffffff;
+    --primary-text: #e8e8e8;
+    --secondary-text: #888888;
+    --tertiary-text: #555555;
+    --placeholder-text: #3a3a3a;
+    --disabled-text: #2e2e2e;
+    color-scheme: dark;
+  }
+}
+
+/* Base Body Styles com Transição */
+body {
+  background: var(--background);
+  color: var(--primary-text);
+  overflow-x: hidden;
+  transition: background-color var(--transition-default), color var(--transition-default);
+}
+
+header {
+  width: 100%;
+  height: 100px;
+  border-bottom: 1px solid var(--border);
+  background: var(--sidebar);
+  transition: background-color var(--transition-default), border-color var(--transition-default);
+}
+
+/* ============= Utilitários ============= */
 .hoverTextDecorationEffect {
   position: relative;
-  &::before {
-    content: "";
-    position: absolute;
-    top: calc(100% - 5px);
-    left: 0;
-    width: 0;
-    height: 2px;
-    background: white;
-    transition: 0.3s ease;
-  }
-  &:hover {
-    &::before {
-      width: 100%;
-    }
-  }
 }
+.hoverTextDecorationEffect::before {
+  content: "";
+  position: absolute;
+  top: calc(100% - 2px);
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--color-accent);
+  transition: width var(--transition-default);
+}
+.hoverTextDecorationEffect:hover::before {
+  width: 100%;
+}
+
 div.resume-cards {
   display: flex;
   justify-content: space-around;
@@ -83,45 +230,76 @@ div.resume-cards {
   padding: 10px 30px;
 }
 
-/* Tax Type Badge*/
-
+/* Tax Type Badges */
 .badge-simples {
   background: var(--simples-bg);
   color: var(--simples-color);
   border: 1px solid var(--simples-color);
 }
-
 .badge-presumido {
   background: var(--presumido-bg);
   color: var(--presumido-color);
   border: 1px solid var(--presumido-color);
 }
-
 .badge-folha {
   background: var(--folha-bg);
   color: var(--folha-color);
   border: 1px solid var(--folha-color);
 }
+
+/* Botão Padrão Temporário (Antes do Componente UI) */
 button.default {
   border-radius: 8px;
-  color: white;
+  color: #ffffff;
   font-weight: bold;
-  background: none;
-  border: 1px solid transparent;
+  background: var(--color-accent);
+  border: 1px solid var(--accent-border);
   cursor: pointer;
-  background: var(--item);
-  transition: 0.2s ease;
-  &:hover {
-    background: var(--button-hover);
-    border: 1px solid white;
-  }
+  padding: 8px 16px;
+  transition: background-color var(--transition-default), border-color var(--transition-default), transform 0.1s ease;
 }
-body {
-  background: var(--background);
+button.default:hover {
+  background: var(--accent-hover);
 }
-header {
-  width: 100%;
-  height: 100px;
-  border-bottom: 1px solid gray;
-  background: none;
+button.default:active {
+  transform: scale(0.98);
+}
+
+button.delete-company-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 8px;
+  color: #ff6b6b;
+  font-weight: bold;
+  background: rgba(220, 53, 69, 0.1);
+  border: 1px solid rgba(220, 53, 69, 0.4);
+  cursor: pointer;
+  padding: 8px 16px;
+  font-size: 14px;
+  transition: all 0.15s ease;
+}
+
+button.delete-company-btn:hover {
+  background: rgba(220, 53, 69, 0.2);
+  border-color: rgba(220, 53, 69, 0.7);
+  transform: scale(1.01);
+}
+
+button.delete-company-btn:active {
+  transform: scale(0.98);
+}
+
+button.default {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hidden-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.hidden-scrollbar::-webkit-scrollbar {
+  display: none;
 }

@@ -1,137 +1,342 @@
-import { useEffect, useRef, useState } from "react";
-import { Eye, EyeOff, CircleCheck, CircleX } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Eye, EyeOff, X, ArrowLeft } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
-import { FaFacebook } from "react-icons/fa";
 import "./login.css";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
+import { useToast } from "../../contexts/ToastContext";
+import {
+  signInWithIdentifier,
+  signInWithGoogle,
+  signUp,
+  resetPassword,
+} from "../../services/auth";
+import {
+  isRegisterFormValid,
+  registerValidators,
+} from "../../utils/registerValidators";
+import { Button } from "../../components/ui/Button";
+import { Input } from "../../components/ui/Input";
 
-const validators = {
-  username: (value) => [
-    { rule: value.length >= 4, message: "Mínimo de 4 caracteres" },
-    { rule: value.length <= 18, message: "Máximo de 18 caracteres" },
-  ],
-  email: (value) => [
-    {
-      rule: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
-      message: "E-mail inválido",
-    },
-  ],
-  password: (value) => [
-    { rule: value.length >= 8, message: "Mínimo de 8 caracteres" },
-    {
-      rule: /[!@#$%^&*]/.test(value),
-      message: "Pelo menos 1 caractere especial",
-    },
-  ],
-};
-
-const InputField = ({ type, label, id, validate }) => {
+const InputField = ({
+  type,
+  label,
+  id,
+  validate,
+  value,
+  onChange,
+  disabled,
+  autoComplete,
+}) => {
   const [isActive, setIsActive] = useState(false);
-  const [hasValue, setHasValue] = useState(false);
+  const [showRules, setShowRules] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [rules, setRules] = useState([]);
-  const [showRules, setShowRules] = useState(false); // só aparece após primeiro blur
-
-  const handleblur = (e) => {
-    if (!e.target.value) setIsActive(false);
-    if (validate) setShowRules(true);
-  };
 
   const isPassword = type === "password";
 
+  const handleBlur = (e) => {
+    if (!e.target.value) setIsActive(false);
+    if (validate) {
+      setRules(validate(e.target.value));
+      setShowRules(true);
+    }
+  };
+
+  const handleChange = (e) => {
+    const v = e.target.value;
+    onChange(v);
+    if (validate) setRules(validate(v));
+  };
+
   return (
     <div className="wrapper">
-      <div
-        className={`input ${isActive ? "active" : ""} ${hasValue ? "filled" : ""}`}
-      >
-        <input
+      <div style={{ position: 'relative' }}>
+        <Input
           type={isPassword && !isVisible ? "password" : "text"}
           id={id}
+          label={label}
+          value={value}
+          onChange={(e) => handleChange(e)}
+          disabled={disabled}
+          autoComplete={
+            autoComplete ?? (isPassword ? "current-password" : "username")
+          }
           onFocus={() => setIsActive(true)}
-          onBlur={handleblur}
-          onChange={(e) => {
-            setHasValue(e.target.value.length > 0);
-            if (validate) setRules(validate(e.target.value));
-          }}
+          onBlur={handleBlur}
+          error={rules.find(r => !r.rule)?.message ?? null}
         />
-        <label htmlFor={id}>{label}</label>
         {isPassword && (
           <span
             className="toggle-visibility"
             onClick={() => setIsVisible((prev) => !prev)}
+            style={{ position: 'absolute', right: '12px', top: label ? '38px' : '15px', cursor: 'pointer', color: 'var(--secondary-text)' }}
           >
-            {isVisible ? <EyeOff size={24} /> : <Eye size={24} />}
+            {isVisible ? <EyeOff size={20} /> : <Eye size={20} />}
           </span>
         )}
       </div>
-      {showRules && (
-        <ul className="input-rules">
-          {rules.map((item, index) => (
-            <li key={index} className={item.rule ? "valid" : "invalid"}>
-              {item.rule ? <CircleCheck size={14} /> : <CircleX size={14} />}
-              {item.message}
-            </li>
-          ))}
-        </ul>
-      )}
     </div>
   );
 };
-export function Login() {
-  useEffect(() => {
-    document.body.classList.add("login-page");
 
-    return () => {
-      document.body.classList.remove("login-page");
-    };
-  });
+export function Login() {
   const navigate = useNavigate();
-  // useState para alterar entre os forms
+  const { session, loading: authLoading } = useAuth();
+  const { addToast } = useToast();
+
   const [registerIsActive, setRegisterIsActive] = useState(false);
-  const toggleActive = () => {
-    setRegisterIsActive((prev) => !prev);
-  };
-  // InputField
+  const [loginIdentifier, setLoginIdentifier] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+  const [regUsername, setRegUsername] = useState("");
+  const [regEmail, setRegEmail] = useState("");
+  const [regPassword, setRegPassword] = useState("");
+  const [authError, setAuthError] = useState("");
+  const [authMessage, setAuthMessage] = useState("");
+  const [pending, setPending] = useState(false);
+
   const loginRef = useRef(null);
   const registerRef = useRef(null);
   const [height, setHeight] = useState(0);
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    navigate("/home");
-  };
+  const [forgotPassword, setForgotPassword] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotLoading, setForgotLoading] = useState(false);
+  const [forgotSent, setForgotSent] = useState(false);
+
+  const loginCanSubmit = useMemo(
+    () => Boolean(loginIdentifier.trim()) && Boolean(loginPassword.length),
+    [loginIdentifier, loginPassword],
+  );
+
+  const registerCanSubmit = useMemo(
+    () =>
+      isRegisterFormValid({
+        username: regUsername,
+        email: regEmail,
+        password: regPassword,
+      }),
+    [regUsername, regEmail, regPassword],
+  );
+
+  useEffect(() => {
+    document.body.classList.add("login-page");
+    return () => document.body.classList.remove("login-page");
+  }, []);
+
+  useEffect(() => {
+    if (!authLoading && session) {
+      navigate("/home", { replace: true });
+    }
+  }, [session, authLoading, navigate]);
 
   useEffect(() => {
     const activeForm = registerIsActive
-      ? loginRef.current
-      : registerRef.current;
+      ? registerRef.current
+      : loginRef.current;
+    if (!activeForm) return;
     setHeight(activeForm.offsetHeight);
     const observer = new ResizeObserver(() => {
       setHeight(activeForm.offsetHeight);
     });
     observer.observe(activeForm);
-
     return () => observer.disconnect();
-  }, [registerIsActive]);
+  }, [registerIsActive, authError, authMessage, registerCanSubmit]);
+
+  const toggleActive = () => {
+    setRegisterIsActive((prev) => !prev);
+    setAuthError("");
+    setAuthMessage("");
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setAuthError("");
+    setAuthMessage("");
+    if (!loginIdentifier.trim() || !loginPassword) {
+      setAuthError("Preencha e-mail ou usuário e a senha.");
+      return;
+    }
+    setPending(true);
+    const { error } = await signInWithIdentifier(
+      loginIdentifier,
+      loginPassword,
+    );
+    setPending(false);
+    if (error) {
+      if (error.message.includes("Email not confirmed")) {
+        setAuthError("E-mail não confirmado. Verifique sua caixa de entrada.");
+      } else {
+        setAuthError(error.message);
+      }
+      return;
+    }
+    navigate("/home", { replace: true });
+  };
+
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+    if (!forgotEmail.trim()) {
+      setAuthError("Digite seu e-mail.");
+      return;
+    }
+    setForgotLoading(true);
+    setAuthError("");
+    const { error } = await resetPassword(forgotEmail);
+    setForgotLoading(false);
+    if (error) {
+      setAuthError(error.message);
+      return;
+    }
+    setForgotSent(true);
+  };
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    setAuthError("");
+    setAuthMessage("");
+    if (
+      !isRegisterFormValid({
+        username: regUsername,
+        email: regEmail,
+        password: regPassword,
+      })
+    ) {
+      setAuthError("Preencha todos os campos conforme as regras indicadas.");
+      return;
+    }
+    setPending(true);
+    const { data, error } = await signUp({
+      email: regEmail,
+      password: regPassword,
+      username: regUsername,
+    });
+    setPending(false);
+    if (error) {
+      setAuthError(error.message);
+      return;
+    }
+    if (data?.session) {
+      addToast("Conta criada com sucesso!", "success");
+      navigate("/home", { replace: true });
+      return;
+    }
+    setAuthMessage("Verifique seu e-mail para confirmar e depois faça login.");
+  };
+
+  const handleGoogle = async () => {
+    setAuthError("");
+    setPending(true);
+    const { error } = await signInWithGoogle();
+    setPending(false);
+    if (error) setAuthError(error.message);
+  };
+
+  if (authLoading) {
+    return (
+      <span style={{ color: "#fff", padding: "2rem" }}>Carregando...</span>
+    );
+  }
+
+  if (forgotPassword) {
+    return (
+      <section id="login" style={{ minHeight: 400 }}>
+        <form className="login active" onSubmit={handleForgotPassword}>
+          <span onClick={() => { setForgotPassword(false); setForgotSent(false); setAuthError(""); }} 
+              className="back-to-login">
+            <ArrowLeft size={18} /> Voltar
+          </span>
+          <h1>Recuperar Senha<span>.</span></h1>
+          {forgotSent ? (
+            <p className="auth-banner auth-success" style={{ marginBottom: "20px" }}>
+              E-mail de recuperação enviado! Verifique sua caixa de entrada.
+            </p>
+          ) : (
+            <>
+              <p style={{ color: "var(--secondary-text)", marginBottom: "20px" }}>
+                Digite seu e-mail para receber o link de recuperação.
+              </p>
+              {authError && (
+                <p className="auth-banner auth-error">{authError}</p>
+              )}
+              <div className="input-container">
+                <InputField
+                  type="email"
+                  id="forgotEmail"
+                  label="E-mail"
+                  value={forgotEmail}
+                  onChange={setForgotEmail}
+                  disabled={forgotLoading}
+                  autoComplete="email"
+                />
+              </div>
+              <Button
+                type="submit"
+                disabled={forgotLoading || !forgotEmail.trim()}
+                isLoading={forgotLoading}
+                fullWidth
+                style={{ marginTop: '10px' }}
+              >
+                Enviar Link
+              </Button>
+            </>
+          )}
+        </form>
+      </section>
+    );
+  }
+
   return (
     <>
-      <section id="login" style={{ height: height }}>
+      <section
+        id="login"
+        style={{
+          height: height > 0 ? height : undefined,
+          minHeight: height > 0 ? undefined : 560,
+        }}
+      >
         <form
-          action="POST"
-          className={`login ${registerIsActive ? "active" : ""}`}
+          className={`login ${!registerIsActive ? "active" : ""}`}
           ref={loginRef}
-          onSubmit={handleSubmit}
+          onSubmit={handleLogin}
         >
           <h1>
             Faça seu Login<span>.</span>
           </h1>
+          {authError && !registerIsActive && (
+            <p className="auth-banner auth-error">{authError}</p>
+          )}
           <div className="input-container">
-            <InputField type="text" id="email" label="E-mail" />
-            <InputField type="password" id="senha" label="Senha" />
+            <InputField
+              type="text"
+              id="loginIdentifier"
+              label="E-mail ou nome de usuário"
+              value={loginIdentifier}
+              onChange={setLoginIdentifier}
+              disabled={pending}
+              autoComplete="username"
+            />
+            <InputField
+              type="password"
+              id="senha"
+              label="Senha"
+              value={loginPassword}
+              onChange={setLoginPassword}
+              disabled={pending}
+              autoComplete="current-password"
+            />
           </div>
-          <a href="#" className="forgot-password hoverTextDecorationEffect">
+          <span onClick={() => { setForgotPassword(true); setAuthError(""); }} className="forgot-password hoverTextDecorationEffect">
             Esqueci a senha
-          </a>
-          <button className="login-button">Entrar</button>
+          </span>
+          <Button
+            type="submit"
+            disabled={pending || !loginCanSubmit}
+            isLoading={pending}
+            fullWidth
+            style={{ marginTop: '10px' }}
+          >
+            Entrar
+          </Button>
           <span
             onClick={toggleActive}
             className="go-register hoverTextDecorationEffect"
@@ -139,64 +344,82 @@ export function Login() {
             Não tem conta? Registre-se
           </span>
           <div className="social-login">
-            <span>Ou, se preferir</span>
-            <button className="social" style={{ "--social-color": "#ff2a17" }}>
-              <FcGoogle size={28} />
-              google
-            </button>
-            <button className="social" style={{ "--social-color": "#4286F5" }}>
-              <FaFacebook size={28} />
-              facebook
-            </button>
+            <span>Ou continue com</span>
+            <Button
+              variant="secondary"
+              type="button"
+              className="social-google"
+              onClick={handleGoogle}
+              disabled={pending}
+              fullWidth
+              style={{ marginTop: '10px' }}
+            >
+              <FcGoogle size={22} style={{ marginRight: '8px' }} />
+              Continuar com Google
+            </Button>
           </div>
         </form>
         <form
-          action="POST"
-          className={`register ${registerIsActive ? "" : "active"}`}
+          className={`register ${registerIsActive ? "active" : ""}`}
           ref={registerRef}
-          onSubmit={handleSubmit}
+          onSubmit={handleRegister}
         >
           <h1>
             Registre sua conta<span>.</span>
           </h1>
+          {authError && registerIsActive && (
+            <p className="auth-banner auth-error">{authError}</p>
+          )}
+          {authMessage && (
+            <p className="auth-banner auth-success">{authMessage}</p>
+          )}
           <div className="input-container">
             <InputField
               type="text"
               id="registerUsername"
               label="Nome de Usuário"
-              validate={validators.username}
+              validate={registerValidators.username}
+              value={regUsername}
+              onChange={setRegUsername}
+              disabled={pending}
+              autoComplete="username"
             />
             <InputField
               type="text"
               id="registerEmail"
               label="E-mail"
-              validate={validators.email}
+              validate={registerValidators.email}
+              value={regEmail}
+              onChange={setRegEmail}
+              disabled={pending}
+              autoComplete="email"
             />
             <InputField
               type="password"
               id="registerPassword"
               label="Senha"
-              validate={validators.password}
+              validate={registerValidators.password}
+              value={regPassword}
+              onChange={setRegPassword}
+              disabled={pending}
+              autoComplete="new-password"
             />
           </div>
-          <button className="login-button">Criar Conta</button>
+          <Button
+            type="submit"
+            disabled={pending || !registerCanSubmit}
+            isLoading={pending}
+            fullWidth
+            style={{ marginTop: '20px' }}
+          >
+            Criar Conta
+          </Button>
           <span
-            className="go-register hoverTextDecorationEffect"
             onClick={toggleActive}
+            className="go-register hoverTextDecorationEffect"
           >
             Tem conta? Faça Login
           </span>
-          <div className="social-login">
-            <span>Ou, se preferir</span>
-            <button className="social" style={{ "--social-color": "#ff2a17" }}>
-              <FcGoogle size={28} />
-              google
-            </button>
-            <button className="social" style={{ "--social-color": "#4286F5" }}>
-              <FaFacebook size={28} />
-              facebook
-            </button>
-          </div>
         </form>
       </section>
     </>

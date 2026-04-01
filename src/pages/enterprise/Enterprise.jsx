@@ -1,41 +1,21 @@
 import { useNavigate, useParams } from "react-router-dom";
 import "./enterprise.css";
-import { useEffect, useState, useMemo } from "react";
-import { getCompanyById, getTaxesByCompany } from "../../services/api";
+import { useEffect, useState, useMemo, useCallback } from "react";
+import { getCompanyById, getTaxesByCompany, deleteTax, deleteCompany } from "../../services/api";
 import { ArrowLeft, Pencil, Trash2 } from "lucide-react";
 import { generateColor } from "../../utils/generateColor";
 import { ResumeCard } from "../../components/resumeCard/ResumeCard";
 import { TaxChart } from "../../components/TaxChart/TaxChart";
-const taxFields = [
-  "simple",
-  "pis",
-  "cofins",
-  "csll",
-  "irpj",
-  "iss_icms",
-  "efd_reinf",
-];
-const taxTypeConfig = {
-  simple: { label: "Simples", badge: "badge-simples" },
-  presumed: { label: "Presumido", badge: "badge-presumido" },
-  simple_payroll: { label: "Simples c/ Folha", badge: "badge-folha" },
-  presumed_no_movement: {
-    label: "Presumido s/ Mov.",
-    badge: "badge-sem-movimento",
-  },
-};
-
-const getTotalFromRecord = (record) =>
-  taxFields.reduce((sum, field) => sum + (record?.[field] ?? 0), 0);
-
-const formatCurrency = (value) =>
-  value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-
-const formatDate = (dateStr) =>
-  new Date(dateStr).toLocaleString("pt-BR", {
-    month: "short",
-    year: "2-digit",
-  });
+import { TaxModal } from "../../components/TaxModal/TaxModal";
+import { EnterpriseModal } from "../../components/EnterpriseModal/EnterpriseModal";
+import { useToast } from "../../contexts/ToastContext";
+import {
+  taxFields,
+  getTotalFromRecord,
+  taxTypeConfig,
+  FIELD_LABELS,
+} from "../../utils/taxUtils";
+import { formatBRL, formatMonthShortPt } from "../../utils/formatters";
 
 export function Enterprise() {
   const { id } = useParams();
@@ -43,6 +23,51 @@ export function Enterprise() {
   const [company, setCompany] = useState(null);
   const [taxes, setTaxes] = useState([]);
   const [loading, setLoading] = useState(true);
+  
+  const { addToast } = useToast();
+  const [isTaxModalOpen, setIsTaxModalOpen] = useState(false);
+  const [selectedTax, setSelectedTax] = useState(null);
+  
+  const [isEnterpriseModalOpen, setIsEnterpriseModalOpen] = useState(false);
+
+  const fetchTaxesOnly = async () => {
+    try {
+      const taxesData = await getTaxesByCompany(id);
+      setTaxes(taxesData);
+    } catch (e) {
+      console.error(e);
+      addToast("Erro ao recarregar impostos", "error");
+    }
+  };
+
+  const handleEdit = useCallback((tax) => {
+    setSelectedTax(tax);
+    setIsTaxModalOpen(true);
+  }, []);
+
+  const handleDelete = useCallback(async (taxId) => {
+    if (!window.confirm("Você tem certeza que deseja excluir esse registro? Essa ação não pode ser desfeita.")) return;
+    try {
+      await deleteTax(taxId);
+      addToast("Imposto deletado com sucesso", "success");
+      fetchTaxesOnly();
+    } catch (e) {
+      console.error(e);
+      addToast("Falha ao deletar o imposto", "error");
+    }
+  }, [addToast, id]);
+
+  const handleDeleteCompany = useCallback(async () => {
+    if (!window.confirm(`Tem certeza que deseja excluir "${company?.name}"? Todos os registros de impostos desta empresa serão apagados. Esta ação é irreversível.`)) return;
+    try {
+      await deleteCompany(id);
+      addToast(`Empresa "${company?.name}" excluída com sucesso.`, "success");
+      navigate("/enterprises");
+    } catch (e) {
+      console.error(e);
+      addToast("Falha ao excluir a empresa.", "error");
+    }
+  }, [addToast, id, company, navigate]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -63,14 +88,14 @@ export function Enterprise() {
   }, [id]);
 
   const {
-    sorted,
-    latest,
-    previous,
-    latestTotal,
-    previousTotal,
-    variation,
-    highest,
-    accumulated,
+    sorted = [],
+    latest = null,
+    previous = null,
+    latestTotal = 0,
+    previousTotal = 0,
+    variation = null,
+    highest = null,
+    accumulated = 0,
   } = useMemo(() => {
     if (!taxes.length) return {};
 
@@ -114,7 +139,6 @@ export function Enterprise() {
       id="enterpriseContainer"
       style={{ "--company-color": color, "--company-alpha": elementAlphaColor }}
     >
-      {console.log(company)}
       <header>
         <div className="enterprise-name-container">
           <ArrowLeft size={32} onClick={() => navigate(-1)} />
@@ -125,15 +149,27 @@ export function Enterprise() {
           <span className={`enterprise-tax ${badge}`}>{label}</span>
         </div>
         <div className="header-buttons">
-          <button className="default">Editar Empresa</button>
+          <button 
+            className="default" 
+            onClick={() => setIsEnterpriseModalOpen(true)}
+          >
+            <Pencil size={14} /> Editar Empresa
+          </button>
+          <button
+            className="delete-company-btn"
+            onClick={handleDeleteCompany}
+            title="Excluir empresa permanentemente"
+          >
+            <Trash2 size={14} /> Excluir Empresa
+          </button>
         </div>
       </header>
       <section id="enterprise">
         <div className="resume-cards">
           <ResumeCard
             title="Total mais recente"
-            value={formatCurrency(latestTotal)}
-            date={formatDate(latest.date)}
+            value={latestTotal > 0 ? formatBRL(latestTotal) : "—"}
+            date={latest ? formatMonthShortPt(latest.date) : "Sem Registros"}
             color={color}
           />
           <ResumeCard
@@ -144,39 +180,48 @@ export function Enterprise() {
                 : "—"
             }
             valueColor={
-              variation >= 0 ? "var(--positive-color)" : "var(--negative-color)"
+              variation == null
+                ? undefined
+                : variation >= 0
+                  ? "var(--positive-color)"
+                  : "var(--negative-color)"
             }
             date="vs mês anterior"
             color={color}
           />
           <ResumeCard
             title="Maior registro"
-            value={formatCurrency(getTotalFromRecord(highest))}
-            date={formatDate(highest.date)}
+            value={highest ? formatBRL(getTotalFromRecord(highest)) : "—"}
+            date={highest ? formatMonthShortPt(highest.date) : "Sem Registros"}
             color={color}
           />
           <ResumeCard
             title="Total acumulado"
-            value={formatCurrency(accumulated)}
+            value={formatBRL(accumulated)}
             date={`últimos ${sorted.length} meses`}
             color={color}
           />
         </div>
         <div className="charts">
           <span className="charts-title">Evolução Mensal - {label}</span>
-          <TaxChart taxes={taxes} field="simple" color={color} />
+          <TaxChart taxes={taxes} field="total" color={color} />
         </div>
         <div className="table-wrapper">
           <div className="table-header">
             <span className="table-title">Histórico de Registros</span>
-            <button className="default new-register">+ Novo Registro</button>
+            <button 
+              className="default new-register"
+              onClick={() => { setSelectedTax(null); setIsTaxModalOpen(true); }}
+            >
+              + Novo Registro
+            </button>
           </div>
           <table>
             <thead>
               <tr>
                 <th>Mês</th>
                 {taxFields.map((field) => (
-                  <th key={field}>{field.toUpperCase().replace("_", "/")}</th>
+                  <th key={field}>{FIELD_LABELS[field]}</th>
                 ))}
                 <th>Total</th>
                 <th>Variação</th>
@@ -196,13 +241,13 @@ export function Enterprise() {
 
                 return (
                   <tr key={tax.id}>
-                    <td className="td-date">{formatDate(tax.date)}</td>
+                    <td className="td-date">{formatMonthShortPt(tax.date)}</td>
                     {taxFields.map((field) => (
                       <td key={field}>
-                        {tax[field] != null ? formatCurrency(tax[field]) : "—"}
+                        {tax[field] != null ? formatBRL(tax[field]) : "—"}
                       </td>
                     ))}
-                    <td className="td-total">{formatCurrency(total)}</td>
+                    <td className="td-total">{formatBRL(total)}</td>
                     <td>
                       {variation != null ? (
                         <span
@@ -238,6 +283,22 @@ export function Enterprise() {
           </table>
         </div>
       </section>
+
+      <TaxModal 
+        isOpen={isTaxModalOpen}
+        onClose={() => setIsTaxModalOpen(false)}
+        companyId={id}
+        initialData={selectedTax}
+        existingTaxes={taxes}
+        onSuccess={fetchTaxesOnly}
+      />
+
+      <EnterpriseModal
+        isOpen={isEnterpriseModalOpen}
+        onClose={() => setIsEnterpriseModalOpen(false)}
+        initialData={company}
+        onSuccess={() => window.location.reload()}
+      />
     </div>
   );
 }

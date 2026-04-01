@@ -4,21 +4,8 @@ import { Chart } from "chart.js/auto";
 import "./enterprisecard.css";
 import { useNavigate } from "react-router-dom";
 import { generateColor } from "../../utils/generateColor";
-const taxFields = [
-  "simple",
-  "pis",
-  "cofins",
-  "csll",
-  "irpj",
-  "iss_icms",
-  "efd_reinf",
-];
-
-const taxTypeLabel = {
-  simple: "Simples",
-  presumed: "Presumido",
-  simple_payroll: "Simples c/ Folha",
-};
+import { getTotalFromRecord, taxTypeConfig } from "../../utils/taxUtils";
+import { formatMonthShortPt, getInitials, formatBRL } from "../../utils/formatters";
 
 export function EnterpriseCard({ empresa, taxes }) {
   const navigate = useNavigate();
@@ -29,9 +16,7 @@ export function EnterpriseCard({ empresa, taxes }) {
     .filter((t) => t.company_id === empresa.id)
     .sort((a, b) => new Date(a.date) - new Date(b.date));
 
-  const historico = orderedRegister.map((t) =>
-    taxFields.reduce((total, field) => total + (t[field] ?? 0), 0),
-  );
+  const historico = orderedRegister.map((t) => getTotalFromRecord(t));
 
   const ultimo = orderedRegister.at(-1);
   const penultimo = orderedRegister.at(-2);
@@ -44,18 +29,10 @@ export function EnterpriseCard({ empresa, taxes }) {
 
   const labelMes = (registro) => {
     if (!registro) return "—";
-    return new Date(registro.date).toLocaleString("pt-BR", {
-      month: "short",
-      year: "2-digit",
-    });
+    return formatMonthShortPt(registro.date);
   };
 
-  const initials = empresa.name
-    .split(" ")
-    .map((w) => w[0])
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
+  const taxLabel = taxTypeConfig[empresa.tax_type]?.label ?? "";
 
   useEffect(() => {
     if (!chartRef.current || historico.length === 0) return;
@@ -98,7 +75,7 @@ export function EnterpriseCard({ empresa, taxes }) {
                   ? labelMes(orderedRegister[items[0].dataIndex])
                   : "",
               label: (item) =>
-                `R$ ${item.raw.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`,
+                formatBRL(item.raw),
             },
           },
         },
@@ -107,7 +84,7 @@ export function EnterpriseCard({ empresa, taxes }) {
     });
 
     return () => chart.destroy();
-  }, [historico.length]); // re-renderiza quando os dados chegarem
+  }, [historico.length]);
 
   return (
     <div
@@ -120,17 +97,15 @@ export function EnterpriseCard({ empresa, taxes }) {
     >
       <div className="top">
         <div className="name">
-          <span className="enterprise-letter">{initials}</span>
+          <span className="enterprise-letter">{getInitials(empresa.name)}</span>
           <span className="enterprise-name">{empresa.name}</span>
-          <span className="enterprise-tax">
-            {taxTypeLabel[empresa.tax_type]}
-          </span>
+          <span className="enterprise-tax">{taxLabel}</span>
         </div>
         <div className="value">
           <span className="date">{labelMes(ultimo)}</span>
           <span className="total-value">
             {totalAtual > 0
-              ? `R$ ${totalAtual.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`
+              ? formatBRL(totalAtual)
               : "—"}
           </span>
           <span

@@ -1,0 +1,108 @@
+.batch-edit-layout {
+  padding: 30px;
+}
+
+.batch-month-picker {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: var(--item);
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border-strong);
+}
+
+.batch-month-area {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.batch-month-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--secondary-text);
+}
+
+.batch-month-picker label {
+  font-size: 12px;
+  color: var(--secondary-text);
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.batch-month-picker input {
+  background: transparent;
+  color: var(--primary-text);
+  border: none;
+  font-size: 16px;
+  outline: none;
+}
+
+.batch-month-picker input::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.batch-popup-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.batch-popup-card {
+  background: var(--item);
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  padding: 30px;
+  max-width: 450px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.batch-popup-card h3 {
+  margin: 0 0 15px 0;
+  color: var(--title);
+  font-size: 20px;
+}
+
+.batch-popup-card p {
+  color: var(--secondary-text);
+  line-height: 1.5;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.batch-popup-card strong {
+  color: var(--color-accent);
+}
+
+.batch-popup-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 25px;
+}
+
+.batch-popup-actions .discard-btn {
+  background: var(--background);
+  color: var(--secondary-text);
+  border-color: var(--border-strong);
+}
+
+.batch-popup-actions .discard-btn:hover {
+  background: var(--button-hover);
+  color: var(--primary-text);
+}
+
+@keyframes popIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
