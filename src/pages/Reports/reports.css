@@ -1,33 +1,46 @@
 div#reportsContainer {
   position: relative;
-  margin-left: var(--sidebar-width);
   padding: 32px;
   padding-top: 100px;
   display: flex;
   flex-direction: column;
   gap: 28px;
   min-height: 100vh;
-  width: calc(100vw - var(--sidebar-width));
+  width: 100%;
   transition: margin-left 0.3s ease;
+  
+  @media (max-width: 768px) {
+    padding: 20px 15px;
+    padding-top: 20px;
+    gap: 20px;
+  }
+
+
   header.reports-header {
-    position: absolute;
-    top: 0;
-    left: 0;
+    position: relative;
     width: 100%;
-    height: 100px;
-    padding: 20px;
+    height: auto;
+    padding: 20px 0;
     border-bottom: 1px solid var(--border);
+
+    @media (max-width: 768px) {
+      padding: 10px 0;
+      text-align: center;
+    }
+
     h1 {
-      font-size: 22;
+      font-size: 22px;
       font-weight: 500;
       color: var(--primary-text);
     }
+
     p {
       font-size: 13px;
       color: var(--secondary-text);
       margin-top: 4px;
     }
   }
+
 
   div.month-scroller-wrap {
     position: relative;
@@ -38,6 +51,7 @@ div#reportsContainer {
     justify-content: center;
     height: 80px;
     gap: 8px;
+
     div.month-scroller {
       display: flex;
       align-items: center;
@@ -72,9 +86,11 @@ div#reportsContainer {
         }
       }
     }
+
     .scroller-dots {
       display: flex;
       gap: 4px;
+
       .scroller-dot {
         width: 4px;
         height: 4px;
@@ -82,6 +98,7 @@ div#reportsContainer {
         background: var(--button-hover);
         cursor: pointer;
         transition: all 0.3s ease;
+
         &:hover {
           width: 8px;
           height: 8px;
@@ -95,11 +112,13 @@ div#reportsContainer {
       }
     }
   }
+
   div.divider {
     position: relative;
     display: flex;
     justify-content: center;
     width: 100%;
+
     &::before {
       content: "";
       position: absolute;
@@ -111,6 +130,7 @@ div#reportsContainer {
       background: var(--border-strong);
       z-index: 0;
     }
+
     span.divider-label {
       background: var(--background);
       padding: 5px 15px;
@@ -119,15 +139,24 @@ div#reportsContainer {
       z-index: 1;
     }
   }
+
   div.anomaly-cards-container {
     width: 100%;
     display: flex;
     align-items: flex-start;
     justify-content: center;
     gap: 20px;
+    
+    @media (max-width: 1024px) {
+      flex-direction: column;
+    }
+
+
     div.anomaly-card {
       flex: 1;
+      width: 100%;
       background: var(--item);
+
       border-radius: 14px;
       padding: 20px 24px;
       cursor: pointer;
@@ -137,21 +166,25 @@ div#reportsContainer {
       &:hover {
         border-left: 5px solid var(--color-accent);
       }
+
       div.anomaly-card-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
         margin-bottom: 16px;
+
         span.anomaly-title {
           font-size: 14px;
           font-weight: 500;
           color: var(--primary-text);
         }
       }
+
       ul.anomaly-list {
         display: flex;
         flex-direction: column;
         gap: 8px;
+
         li {
           display: flex;
           align-items: center;
@@ -189,6 +222,7 @@ div#reportsContainer {
             font-weight: 500;
             flex-shrink: 0;
           }
+
           div.anomaly-info {
             flex: 1;
             display: flex;
@@ -206,6 +240,7 @@ div#reportsContainer {
               color: var(--secondary-text);
             }
           }
+
           span.anomaly-badge {
             font-size: 12px;
             font-weight: 500;
@@ -222,10 +257,16 @@ div#reportsContainer {
       }
     }
   }
+
   div.charts-grid {
     display: grid;
     grid-template-columns: 1.2fr 1fr;
     gap: 20px;
+    
+    @media (max-width: 1024px) {
+      grid-template-columns: 1fr;
+    }
+
 
     div.chart-card {
       position: relative;
@@ -237,6 +278,7 @@ div#reportsContainer {
       transition: 0.2s ease-in-out;
       width: 100%;
       min-width: 0;
+
       &:hover {
         top: -10px;
         box-shadow:
@@ -262,6 +304,7 @@ div#reportsContainer {
           margin-top: 3px;
         }
       }
+
       select.field-select {
         background: var(--select-primary);
         color: var(--primary-text);
@@ -269,6 +312,8 @@ div#reportsContainer {
         border-radius: 8px;
         font-size: 12px;
         cursor: pointer;
+        border: 1px solid var(--border);
+        outline: none;
       }
 
       div.chart-wrap {
@@ -276,7 +321,6 @@ div#reportsContainer {
         height: 260px;
         width: 100%;
       }
-      /* Ranking */
 
       div.rank-list {
         display: flex;
@@ -294,11 +338,13 @@ div#reportsContainer {
             width: 16px;
             flex-shrink: 0;
           }
+
           div.rank-info {
             flex: 1;
             display: flex;
             flex-direction: column;
             gap: 4px;
+
             div.rank-name-row {
               display: flex;
               justify-content: space-between;
@@ -308,6 +354,7 @@ div#reportsContainer {
                 font-size: 12px;
                 color: var(--secondary-text);
               }
+
               span.rank-value {
                 font-size: 12px;
                 color: var(--primary-text);
@@ -332,6 +379,7 @@ div#reportsContainer {
       }
     }
   }
+
   span.tag {
     font-size: 11px;
     padding: 3px 10px;
@@ -349,6 +397,7 @@ div#reportsContainer {
       border: 0.5px solid var(--border);
     }
   }
+
   .empty {
     font-size: 12px;
     color: var(--secondary-text);

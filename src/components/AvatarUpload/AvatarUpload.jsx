@@ -12,7 +12,7 @@ export function AvatarUpload({ username, currentAvatar, onUpload }) {
   const [error, setError] = useState(null);
   const fileInputRef = useRef(null);
   
-  const { color, alphaColor } = generateColor(username || "U");
+  const { color } = generateColor(username || "U");
   
   const handleClick = () => fileInputRef.current?.click();
   

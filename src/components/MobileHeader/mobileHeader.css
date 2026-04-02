@@ -1,0 +1,49 @@
+header.mobile-header {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background: var(--sidebar);
+  border-bottom: 1px solid var(--border);
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 15px;
+  z-index: 900;
+  transition: background-color var(--transition-default);
+
+  @media (max-width: 768px) {
+    display: flex;
+  }
+
+  button.hamburger-menu {
+    background: none;
+    border: none;
+    color: var(--primary-text);
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: background 0.2s;
+
+    &:hover {
+      background: var(--button-hover);
+    }
+  }
+
+  .mobile-logo {
+    h1 {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--color-accent);
+      margin: 0;
+    }
+  }
+
+  .header-spacer {
+    width: 44px; /* Matches hamburger button size for centering */
+  }
+}

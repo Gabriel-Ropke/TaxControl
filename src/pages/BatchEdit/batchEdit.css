@@ -1,134 +1,132 @@
 .batch-edit-layout {
   padding: 30px;
-}
 
-.batch-month-picker {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  background: var(--item);
-  padding: 8px 16px;
-  border-radius: 8px;
-  border: 1px solid var(--border-strong);
-}
+  .batch-month-area {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 
-.batch-month-area {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
+    .batch-month-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--secondary-text);
+    }
+  }
 
-.batch-month-label {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--secondary-text);
-}
+  .batch-month-picker {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: var(--item);
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border-strong);
 
-.batch-month-picker label {
-  font-size: 12px;
-  color: var(--secondary-text);
-  text-transform: uppercase;
-  font-weight: 500;
-}
+    label {
+      font-size: 12px;
+      color: var(--secondary-text);
+      text-transform: uppercase;
+      font-weight: 500;
+    }
 
-.batch-month-picker input {
-  background: transparent;
-  color: var(--primary-text);
-  border: none;
-  font-size: 16px;
-  outline: none;
-}
+    input {
+      background: transparent;
+      color: var(--primary-text);
+      border: none;
+      font-size: 16px;
+      outline: none;
 
-.batch-month-picker input::-webkit-calendar-picker-indicator {
-  cursor: pointer;
-  opacity: 0.8;
-}
+      &::-webkit-calendar-picker-indicator {
+        cursor: pointer;
+        opacity: 0.8;
+      }
+    }
+  }
 
-.batch-popup-overlay {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(5px);
-  z-index: 9999;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+  /* Pop-up Overlay */
+  .batch-popup-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-.batch-popup-card {
-  background: var(--item);
-  border: 1px solid var(--border-strong);
-  border-radius: 16px;
-  padding: 32px;
-  width: 95%;
-  max-width: 550px;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  position: relative;
-}
+    .batch-popup-card {
+      background: var(--item);
+      border: 1px solid var(--border-strong);
+      border-radius: 16px;
+      padding: 32px;
+      width: 95%;
+      max-width: 550px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
 
-.popup-close-corner {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  background: transparent;
-  border: none;
-  color: var(--secondary-text);
-  cursor: pointer;
-  padding: 8px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-}
+      .popup-close-corner {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        background: transparent;
+        border: none;
+        color: var(--secondary-text);
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+        &:hover {
+          background: var(--button-hover);
+          color: var(--primary-text);
+        }
+      }
 
-.popup-close-corner:hover {
-  background: var(--button-hover);
-  color: var(--primary-text);
-}
+      h3 {
+        margin: 0 0 16px 0;
+        color: var(--title);
+        font-size: 22px;
+        font-weight: 700;
+      }
 
-.batch-popup-card h3 {
-  margin: 0 0 16px 0;
-  color: var(--title);
-  font-size: 22px;
-  font-weight: 700;
-}
+      p {
+        color: var(--secondary-text);
+        line-height: 1.6;
+        margin-bottom: 12px;
+        font-size: 15px;
+        strong {
+          color: var(--color-accent);
+        }
+      }
 
-.batch-popup-card p {
-  color: var(--secondary-text);
-  line-height: 1.6;
-  margin-bottom: 12px;
-  font-size: 15px;
-}
+      .batch-popup-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 32px;
 
-.batch-popup-card strong {
-  color: var(--color-accent);
-}
+        button {
+          height: 48px !important;
+          font-size: 15px !important;
+        }
 
-.batch-popup-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 32px;
-}
-
-.batch-popup-actions button {
-  height: 48px !important;
-  font-size: 15px !important;
-}
-
-.batch-popup-actions .discard-btn {
-  background: transparent !important;
-  color: #ff6b6b !important;
-  border-color: transparent !important;
-  margin-top: 5px;
-}
-
-.batch-popup-actions .discard-btn:hover {
-  background: rgba(235, 73, 59, 0.05) !important;
+        .discard-btn {
+          background: transparent !important;
+          color: #ff6b6b !important;
+          border-color: transparent !important;
+          margin-top: 5px;
+          &:hover {
+            background: rgba(235, 73, 59, 0.05) !important;
+          }
+        }
+      }
+    }
+  }
 }
 
 @keyframes popIn {

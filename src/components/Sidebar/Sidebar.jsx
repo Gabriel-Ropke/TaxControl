@@ -1,8 +1,9 @@
 import "./sidebar.css";
-import { House, Building2, BarChart2, Settings, Menu, LogOut } from "lucide-react";
-import { useEffect, useState } from "react";
+import { House, Building2, BarChart2, Settings, Menu, LogOut, X } from "lucide-react";
+import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
+import { useLayout } from "../../contexts/LayoutContext";
 
 const navItems = [
   { label: "Home", path: "/home", icon: House },
@@ -12,8 +13,8 @@ const navItems = [
 ];
 
 export function Sidebar() {
-  const { user, signOut } = useAuth();
-  const [activeSidebar, setActiveSidebar] = useState(true);
+  const { signOut } = useAuth();
+  const { isSidebarOpen, toggleSidebar, closeSidebar } = useLayout();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -25,23 +26,39 @@ export function Sidebar() {
   };
 
   useEffect(() => {
+    const isMobile = window.innerWidth <= 768;
+    
+    // Seta largura pra 0 no mobile pra liberar espaço na página
     document.documentElement.style.setProperty(
       "--sidebar-width",
-      activeSidebar ? "250px" : "100px",
+      isMobile ? "0px" : (isSidebarOpen ? "250px" : "100px")
     );
-  }, [activeSidebar]);
+  }, [isSidebarOpen]);
 
-  const handleActiveSidebar = () => {
-    setActiveSidebar((prev) => !prev);
-  };
+  // Fecha o sidebar ao navegar no mobile
+  useEffect(() => {
+    if (window.innerWidth <= 768) {
+      closeSidebar();
+    }
+  }, [location.pathname]);
 
   return (
     <>
-      <aside className={activeSidebar ? "active" : ""}>
-        <div onClick={handleActiveSidebar} className="top">
+      {/* Overlay para mobile */}
+      {isSidebarOpen && window.innerWidth <= 768 && (
+        <div className="sidebar-overlay" onClick={closeSidebar} />
+      )}
+
+      <aside className={isSidebarOpen ? "active" : ""}>
+        <div onClick={toggleSidebar} className="top">
           <Menu size={40} className="menu" />
-          <h2>TaxControl</h2>
-          <span>Gestão de Impostos</span>
+          <div className="sidebar-logo">
+            <h2>TaxControl</h2>
+            <span>Gestão de Impostos</span>
+          </div>
+          <button className="close-sidebar-mobile" onClick={closeSidebar}>
+            <X size={24} />
+          </button>
         </div>
         <nav>
           <ul>

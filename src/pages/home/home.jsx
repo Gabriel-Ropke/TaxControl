@@ -3,7 +3,8 @@ import { PageWithSidebar } from "../../components/PageWithSidebar/PageWithSideba
 import "./home.css";
 import { ChevronDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { ResumeCard } from "../../components/resumeCard/ResumeCard";
+import { ResumeCard } from "../../components/ResumeCard/ResumeCard";
+
 import {
   getMonthOptionsFromTaxes,
   homeTableColumns,
@@ -175,51 +176,57 @@ export function Home() {
             />
           </div>
           <div className="table-wrapper">
-            <table>
-              <thead>
-                <tr>
-                  {homeTableColumns.map(({ key, label }) => (
-                    <th key={key}>{label}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {(tableFilter === "with-record" ? companiesWithRecord.withRecord : companiesWithRecord.withoutRecord).map((company) => {
-                  const tax = taxes.find(
-                    (t) =>
-                      t.company_id === company.id &&
-                      t.date === selectedMonth?.date,
-                  );
-                  return (
-                    <tr key={company.id}>
-                      {homeTableColumns.map(({ key }) => (
-                        <td key={key}>
-                          {key === "tax_type" ? (
-                            <span
-                              className={
-                                taxTypeConfig[company.tax_type]?.badge ?? ""
-                              }
-                            >
-                              {taxTypeConfig[company.tax_type]?.label}
-                            </span>
-                          ) : key === "name" ? (
-                            <span
-                              onClick={() =>
-                                navigate(`/enterprise/${company.id}`)
-                              }
-                            >
-                              {company.name}
-                            </span>
-                          ) : (
-                            formatBRL(tax?.[key])
-                          )}
-                        </td>
-                      ))}
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+            <div className="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    {homeTableColumns.map(({ key, label }) => (
+                      <th key={key} className={(key !== 'name' && key !== 'total') ? 'hide-mobile' : ''}>{label}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {(tableFilter === "with-record" ? companiesWithRecord.withRecord : companiesWithRecord.withoutRecord).map((company) => {
+                    const tax = taxes.find(
+                      (t) =>
+                        t.company_id === company.id &&
+                        t.date === selectedMonth?.date,
+                    );
+                    return (
+                      <tr key={company.id}>
+                        {homeTableColumns.map(({ key }) => (
+                          <td key={key} className={(key !== 'name' && key !== 'total') ? 'hide-mobile' : ''}>
+                            {key === "tax_type" ? (
+                              <span
+                                className={
+                                  taxTypeConfig[company.tax_type]?.badge ?? ""
+                                }
+                              >
+                                {taxTypeConfig[company.tax_type]?.label}
+                              </span>
+                            ) : key === "name" ? (
+                              <span
+                                className="company-name-link"
+                                onClick={() =>
+                                  navigate(`/enterprise/${company.id}`)
+                                }
+                              >
+                                {company.name}
+                              </span>
+                            ) : key === "total" ? (
+                              <strong>{formatBRL(getTotalFromRecord(tax))}</strong>
+                            ) : (
+                              formatBRL(tax?.[key])
+                            )}
+                          </td>
+                        ))}
+                      </tr>
+                    );
+                  })}
+                </tbody>
+
+              </table>
+            </div>
           </div>
         </div>
       </section>

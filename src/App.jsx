@@ -13,6 +13,8 @@ import { ImportData } from "./pages/ImportData/ImportData";
 import { BatchEdit } from "./pages/BatchEdit/BatchEdit";
 import { Reports } from "./pages/Reports/Reports";
 import { Configurations } from "./pages/Configurations/Configurations";
+import { LayoutProvider } from "./contexts/LayoutContext";
+
 
 function App() {
   useInitPreferences();
@@ -20,70 +22,72 @@ function App() {
   return (
     <ToastProvider>
       <CurrencyProvider>
-        <AuthProvider>
-          <BrowserRouter>
-            <Routes>
-            <Route path="/" element={<Login />} />
-            <Route path="/auth/callback" element={<AuthCallback />} />
-            <Route
-              path="/home"
-              element={
-                <ProtectedRoute>
-                  <Home />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/enterprises"
-              element={
-                <ProtectedRoute>
-                  <Enterprises />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/enterprise/:id"
-              element={
-                <ProtectedRoute>
-                  <Enterprise />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/enterprises/import"
-              element={
-                <ProtectedRoute>
-                  <ImportData />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/enterprises/batch-edit"
-              element={
-                <ProtectedRoute>
-                  <BatchEdit />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/reports"
-              element={
-                <ProtectedRoute>
-                  <Reports />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/configurations"
-              element={
-                <ProtectedRoute>
-                  <Configurations />
-                </ProtectedRoute>
-              }
-            />
-          </Routes>
-        </BrowserRouter>
-      </AuthProvider>
+        <LayoutProvider>
+          <AuthProvider>
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Login />} />
+                <Route path="/auth/callback" element={<AuthCallback />} />
+                <Route
+                  path="/home"
+                  element={
+                    <ProtectedRoute>
+                      <Home />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/enterprises"
+                  element={
+                    <ProtectedRoute>
+                      <Enterprises />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/enterprise/:id"
+                  element={
+                    <ProtectedRoute>
+                      <Enterprise />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/enterprises/import"
+                  element={
+                    <ProtectedRoute>
+                      <ImportData />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/enterprises/batch-edit"
+                  element={
+                    <ProtectedRoute>
+                      <BatchEdit />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/reports"
+                  element={
+                    <ProtectedRoute>
+                      <Reports />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/configurations"
+                  element={
+                    <ProtectedRoute>
+                      <Configurations />
+                    </ProtectedRoute>
+                  }
+                />
+              </Routes>
+            </BrowserRouter>
+          </AuthProvider>
+        </LayoutProvider>
       </CurrencyProvider>
     </ToastProvider>
   );

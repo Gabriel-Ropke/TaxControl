@@ -1,9 +1,15 @@
 section#homeContainer {
   width: 100%;
-  height: 100vh;
+  height: auto;
+  min-height: 100vh;
   transition: 0.2s ease;
-  margin-left: var(--sidebar-width);
-  header {
+  
+  @media (max-width: 768px) {
+    height: auto;
+  }
+
+
+    header {
     position: relative;
     display: flex;
     align-items: center;
@@ -13,6 +19,35 @@ section#homeContainer {
     width: 100%;
     height: 100px;
     border-bottom: 1px solid var(--border);
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      height: auto;
+      padding: 24px 20px;
+      gap: 16px;
+      align-items: flex-start;
+      border-bottom: 1px solid var(--border);
+      
+      span.header-title {
+        position: static;
+        transform: none;
+        font-size: 24px;
+        margin: 0;
+        text-align: left;
+      }
+      
+      div.select-custom {
+        width: 100%;
+        margin: 0;
+      }
+      
+      button.add-enterprise {
+        width: 100%;
+        padding: 12px;
+      }
+    }
+
+
     span.header-title {
       position: absolute;
       top: 50%;
@@ -22,9 +57,11 @@ section#homeContainer {
       font-size: 28px;
       font-weight: 600;
     }
+
     div.select-custom {
       position: relative;
       width: 220px;
+
       div.select-trigger {
         position: relative;
         display: flex;
@@ -38,6 +75,7 @@ section#homeContainer {
         color: var(--primary-text);
         cursor: pointer;
         text-transform: capitalize;
+
         svg {
           position: absolute;
           stroke: var(--primary-text);
@@ -45,11 +83,13 @@ section#homeContainer {
           top: 50%;
           transform: translateY(-50%) rotate(0deg);
           transition: 0.2s ease;
+
           &.open {
             transform: translateY(-50%) rotate(180deg);
           }
         }
       }
+
       div.wrapper {
         position: absolute;
         top: calc(100% + 10px);
@@ -58,26 +98,30 @@ section#homeContainer {
         overflow-y: scroll;
         z-index: 2;
         scrollbar-width: none;
+        border-radius: 5px;
+        
         &::-webkit-scrollbar {
           display: none;
         }
-        border-radius: 5px;
 
         ul {
           width: 100%;
           max-height: 0px;
           border: 0px solid transparent;
           transition: 0.3s ease-out;
+
           &.open {
             border: 1px solid transparent;
             max-height: calc(5 * 36px);
-              li {
-                height: 35px;
-                span {
-                  opacity: 1;
-                }
+
+            li {
+              height: 35px;
+              span {
+                opacity: 1;
               }
+            }
           }
+
           li {
             display: flex;
             align-items: center;
@@ -91,34 +135,29 @@ section#homeContainer {
             transition: 0.2s ease;
             box-shadow: 2px 2px 5px 0 rgba(0, 0, 0, 0.2);
             color: var(--primary-text);
+
             span {
               transition: 0.1s ease;
               opacity: 0;
             }
+
             &:hover {
               filter: brightness(1.2);
             }
+
             &:nth-child(even) {
               background: var(--select-secondary);
             }
-          }
-          /*
-            &:hover {
-              li:nth-last-child(1) {
-                top: 0;
-                transform: perspective(1000px) rotateX(0deg);
-                scale: 1;
-              }
-    
-              li:nth-last-child(2) {
-                transform: perspective(1000px) rotateX(0deg);
-                scale: 1;
-              }
+
+            &.active {
+              color: var(--color-accent);
+              font-weight: 600;
             }
-              */
+          }
         }
       }
     }
+
     button.add-enterprise {
       padding: 15px 20px;
       border-radius: 8px;
@@ -128,15 +167,34 @@ section#homeContainer {
       transition: 0.2s ease;
     }
   }
+
   div.general-container {
     width: 100%;
     min-height: calc(100vh - 100px);
     padding-bottom: 50px;
+
     div.table-wrapper {
-      width: calc(100% - 40px);
-      margin: 0 auto;
+      width: 100%;
+      padding: 0 20px;
+      margin-top: 10px;
       overflow: hidden;
       position: relative;
+      
+      .table-container {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        
+        &::-webkit-scrollbar {
+          height: 6px;
+        }
+        &::-webkit-scrollbar-thumb {
+          background: var(--border-strong);
+          border-radius: 3px;
+        }
+      }
+
+
       &::before {
         content: "";
         position: absolute;
@@ -148,15 +206,17 @@ section#homeContainer {
         background: var(--table-header);
         z-index: -1;
       }
+
       table {
         width: 100%;
         table-layout: fixed;
         color: var(--primary-text);
         border-collapse: collapse;
-        td,
-        th {
+
+        td, th {
           text-align: center;
         }
+
         thead {
           tr {
             padding: 5px 0;
@@ -168,9 +228,8 @@ section#homeContainer {
               padding: 10px 0;
               font-weight: 500;
               font-size: 14px;
-              &:first-child,
-              &:nth-child(2) {
-                width: 160px; /* Travado em 200px */
+              &:first-child, &:nth-child(2) {
+                width: 160px;
                 min-width: 160px;
                 max-width: 160px;
                 white-space: nowrap;
@@ -178,24 +237,32 @@ section#homeContainer {
             }
           }
         }
+
         tr {
+          transition: background 0.2s ease;
           &:hover {
-            transition: 0.2s ease;
             background: var(--accent-border);
           }
           td {
-            padding: 20px 0px 20px 0px;
-            text-align: center;
-            &:first-child {
-              cursor: pointer;
-              transition: 0.2s ease;
-              color: var(--secondary-text);
-              &:hover {
-                color: var(--primary-text);
+            padding: 20px 10px;
+            
+            &.hide-mobile, &.hide-mobile {
+              @media (max-width: 600px) {
+                display: none;
               }
             }
-            &:first-child,
-            &:nth-child(2) {
+
+            .company-name-link {
+              cursor: pointer;
+              font-weight: 500;
+              color: var(--primary-text);
+              &:hover {
+                text-decoration: underline;
+                color: var(--color-accent);
+              }
+            }
+
+            &:first-child, &:nth-child(2) {
               white-space: nowrap;
             }
             &:nth-child(2) {

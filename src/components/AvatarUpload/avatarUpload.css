@@ -39,8 +39,10 @@
     transition: opacity 0.2s ease;
   }
   
-  &:hover .avatar-overlay {
-    opacity: 1;
+  &:hover {
+    .avatar-overlay {
+      opacity: 1;
+    }
   }
   
   .uploading {

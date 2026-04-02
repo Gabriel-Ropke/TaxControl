@@ -1,13 +1,22 @@
 div#enterpriseContainer {
-  width: 100vw;
+  width: 100%;
   min-height: 100vh;
-  header {
+
+    header {
     position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
     height: 100px;
+    
+    @media (max-width: 768px) {
+      flex-direction: column;
+      height: auto;
+      padding: 20px 0;
+      gap: 20px;
+    }
+
     &::before {
       content: "";
       position: absolute;
@@ -23,11 +32,38 @@ div#enterpriseContainer {
       grid-template-areas:
         "back letter name"
         "back letter tax";
-      grid-template-columns: 25% 30% 45%;
-      justify-items: center;
+      grid-template-columns: auto auto 1fr;
+      justify-items: start;
       align-items: center;
-      width: 300px;
+      gap: 15px;
+      padding-left: 30px;
       height: 100%;
+      
+      @media (max-width: 768px) {
+        padding-left: 20px;
+        grid-template-columns: auto auto 1fr;
+        grid-template-areas:
+          "back letter name"
+          "back letter tax";
+        gap: 12px;
+        
+        svg {
+          display: block; /* Show back button */
+          width: 24px;
+        }
+        
+        span.enterprise-letter {
+          width: 50px;
+          height: 50px;
+          font-size: 18px;
+        }
+        
+        span.enterprise-name {
+          font-size: 18px;
+        }
+      }
+
+
       svg {
         grid-area: back;
         cursor: pointer;
@@ -81,12 +117,25 @@ div#enterpriseContainer {
       padding: 20px;
       padding-right: 50px;
       height: 100%;
-      button {
-        padding: 15px 40px;
+      
+      @media (max-width: 768px) {
+        padding: 10px 20px;
+        width: 100%;
+        flex-direction: column;
+        gap: 10px;
+        
+        button {
+          width: 100%;
+          padding: 10px;
+          font-size: 13px;
+        }
       }
+
     }
   }
+
   section#enterprise {
+
     display: flex;
     flex-flow: column;
     align-items: center;
@@ -98,86 +147,136 @@ div#enterpriseContainer {
       flex-flow: column;
       align-items: center;
       width: 100%;
-      height: 500px;
+      height: 400px;
       background: var(--item);
       border-radius: 20px;
+      
+      @media (max-width: 768px) {
+        height: 300px;
+      }
+      
       span.charts-title {
         display: block;
         width: 100%;
         padding: 20px 40px;
         color: var(--secondary-text);
+        
+        @media (max-width: 768px) {
+          padding: 15px 20px;
+          text-align: center;
+        }
       }
     }
+
     div.table-wrapper {
       margin-top: 30px;
       width: 100%;
       background: var(--item);
       border-radius: 10px;
       border: 1px solid var(--border);
+      overflow: hidden; /* Important for table scroll */
+
       div.table-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 20px 30px;
+        
+        @media (max-width: 768px) {
+          flex-direction: column;
+          gap: 15px;
+          padding: 20px;
+        }
+        
         span.table-title {
           display: block;
           width: 100%;
           font-size: 14px;
           color: var(--secondary-text);
+          
+          @media (max-width: 768px) {
+            text-align: center;
+          }
         }
         button.new-register {
           padding: 15px 40px;
           white-space: nowrap;
+          
+          @media (max-width: 768px) {
+            width: 100%;
+          }
         }
       }
-      table {
+      
+      .table-container {
         width: 100%;
-        border-collapse: collapse;
-        thead {
+        overflow-x: auto;
+        
+        table {
+          width: 100%;
+          min-width: 600px;
+          border-collapse: collapse;
+
+          thead {
+            tr {
+              th {
+                color: var(--secondary-text);
+                font-weight: 500;
+                font-size: 12px;
+                text-transform: capitalize;
+                padding: 10px;
+              }
+            }
+          }
+
           tr {
-            th {
-              color: var(--secondary-text);
-              font-weight: 500;
-              font-size: 12px;
-              text-transform: capitalize;
-              padding: 10px;
-            }
-          }
-        }
-        tr {
-          th,
-          td {
-            text-align: center;
-            border-top: 1px solid var(--border);
-            padding: 20px 10px;
-            color: var(--primary-text);
-            span {
-              &.negative {
-                color: var(--negative-color);
-              }
-              &.positive {
-                color: var(--positive-color);
+            th,
+            td {
+              text-align: center;
+              border-top: 1px solid var(--border);
+              padding: 20px 10px;
+              color: var(--primary-text);
+              span {
+                &.negative {
+                  color: var(--negative-color);
+                }
+                &.positive {
+                  color: var(--positive-color);
+                }
               }
             }
-          }
-          td.td-actions {
-            button {
-              padding: 5px 20px;
-              margin-left: 10px;
-              background: black;
-              border-radius: 5px;
-              cursor: pointer;
-              background: #ff2525;
-              transition: 0.1s ease;
-              &:hover {
-                filter: brightness(0.8);
-              }
-              svg {
-                stroke: white;
-              }
-              &:first-child {
-                margin-left: 0;
-                background: #2580ff;
+            td.td-actions {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              gap: 8px;
+
+              button {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 32px;
+                height: 32px;
+                border-radius: 6px;
+                cursor: pointer;
+                transition: filter 0.1s ease;
+                border: none;
+
+                &:hover {
+                  filter: brightness(0.8);
+                }
+
+                svg {
+                  stroke: white;
+                }
+
+                &.btn-edit {
+                  background: #2580ff;
+                }
+
+                &.btn-delete {
+                  background: var(--danger);
+                }
               }
             }
           }
@@ -186,3 +285,4 @@ div#enterpriseContainer {
     }
   }
 }
+

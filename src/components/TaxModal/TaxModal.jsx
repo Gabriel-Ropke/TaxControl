@@ -64,10 +64,6 @@ export function TaxModal({ isOpen, onClose, companyId, initialData, existingTaxe
     return isSameMonth;
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
 
   const handleNumericChange = (e) => {
     const { name, value } = e.target;

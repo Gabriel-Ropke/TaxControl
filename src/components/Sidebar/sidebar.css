@@ -1,12 +1,31 @@
 div#root {
   display: flex;
+
+  .sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--overlay);
+    backdrop-filter: blur(2px);
+    z-index: 999;
+    animation: fadeIn 0.3s ease;
+  }
+
   aside {
     overflow: hidden;
     position: fixed;
     width: 250px;
     height: 100vh;
     background: var(--sidebar);
-    transition: width 0.3s ease;
+    transition: width 0.3s ease, transform 0.3s ease;
+    z-index: 1000;
+
+    @media (max-width: 768px) {
+      width: 280px;
+      transform: translateX(-100%);
+      &.active {
+        transform: translateX(0);
+      }
+    }
 
     div.top {
       position: relative;
@@ -22,6 +41,27 @@ div#root {
       width: calc(100% + 80px);
       transition: 0.3s ease;
 
+      .sidebar-logo {
+        transition: opacity 0.3s ease;
+      }
+
+      .close-sidebar-mobile {
+        display: none;
+        position: absolute;
+        right: 90px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: var(--secondary-text);
+        cursor: pointer;
+        padding: 10px;
+
+        @media (max-width: 768px) {
+          display: flex;
+        }
+      }
+
       svg.menu {
         position: absolute;
         left: 100%;
@@ -35,6 +75,10 @@ div#root {
         &:hover {
           background: var(--button-hover);
         }
+
+        @media (max-width: 768px) {
+          display: none;
+        }
       }
 
       h2 {
@@ -42,7 +86,6 @@ div#root {
         color: var(--title);
         font-size: 24px;
         white-space: nowrap;
-        transition: opacity 0.3s ease;
         transform: translateX(0);
       }
 
@@ -51,7 +94,6 @@ div#root {
         color: var(--tertiary-text);
         text-transform: lowercase;
         white-space: nowrap;
-        transition: opacity 0.3s ease;
         transform: translateX(0);
       }
     }
@@ -79,6 +121,7 @@ div#root {
           border-left: 2px solid transparent;
           transition: 0.35s ease;
           overflow: hidden;
+
           svg {
             position: absolute;
             top: 50%;
@@ -93,7 +136,7 @@ div#root {
           span {
             position: relative;
             white-space: nowrap;
-            max-width: 200px; /* qualquer valor maior que o texto */
+            max-width: 200px;
             opacity: 1;
             z-index: 1;
           }
@@ -204,102 +247,120 @@ div#root {
       }
     }
 
-    /* Estado colapsado — só sobrescreve o que muda */
-    &:not(.active) {
-      width: 100px;
+      &:not(.active) {
+        @media (min-width: 769px) {
+          width: 100px;
 
-      div.top {
-        align-items: center;
-        padding-left: 0;
-        justify-content: center;
-        border-bottom-color: transparent;
-        height: 100px;
-        left: -100%;
-        &::before {
-          content: "";
-          position: absolute;
-          top: calc(100% - 1px);
-          left: 20px;
-          width: 100%;
-          height: 1px;
-          background: var(--border);
-        }
+          div.top {
+            align-items: center;
+            padding-left: 0;
+            justify-content: center;
+            border-bottom-color: transparent;
+            height: 100px;
+            left: -100%;
+            &::before {
+              content: "";
+              position: absolute;
+              top: calc(100% - 1px);
+              left: 20px;
+              width: 100%;
+              height: 1px;
+              background: var(--border);
+            }
 
-        svg.menu {
-          display: block;
-          padding: 10px;
-          left: calc(100% - 60px);
-          height: 60px;
-          width: 60px;
-          color: var(--title);
-          border-radius: 10px;
-
-          &:hover {
-            background: var(--button-hover);
-          }
-        }
-
-        h2,
-        span {
-          transform: translateX(-50%);
-        }
-      }
-
-      nav {
-        padding: 20px;
-
-        ul {
-          gap: 10px;
-
-          li {
-            padding: 0;
-            height: 60px;
-            border-radius: 8px;
-            border: none;
-
-            span {
+            .sidebar-logo {
               opacity: 0;
-              transition: opacity 0.1s ease;
             }
 
-            svg {
-              stroke: var(--secondary-text);
-              left: 50%;
-              transform: translate(-50%, -50%);
-            }
-
-            &.active {
-              background: var(--button-hover);
-              border: 1px solid var(--border-focus);
-              svg {
-                stroke: var(--primary-text);
-              }
+            svg.menu {
+              display: block;
+              padding: 10px;
+              left: calc(100% - 60px);
+              height: 60px;
+              width: 60px;
+              color: var(--title);
+              border-radius: 10px;
 
               &:hover {
                 background: var(--button-hover);
-                border: 1px solid var(--border-focus);
+              }
+            }
+          }
+
+          nav {
+            padding: 20px;
+
+            ul {
+              gap: 10px;
+
+              li {
+                padding: 0;
+                height: 60px;
+                border-radius: 8px;
+                border: none;
+
+                span {
+                  opacity: 0;
+                  transition: opacity 0.1s ease;
+                }
 
                 svg {
-                  stroke: var(--border-focus);
+                  stroke: var(--secondary-text);
+                  left: 50%;
+                  transform: translate(-50%, -50%);
+                }
+
+                &.active {
+                  background: var(--button-hover);
+                  border: 1px solid var(--border-focus);
+                  svg {
+                    stroke: var(--primary-text);
+                  }
+
+                  &:hover {
+                    background: var(--button-hover);
+                    border: 1px solid var(--border-focus);
+
+                    svg {
+                      stroke: var(--border-focus);
+                    }
+                  }
+                }
+
+                &:not(.active):hover {
+                  background: var(--button-hover);
                 }
               }
             }
+          }
 
-            &:not(.active):hover {
-              background: var(--button-hover);
+          div.bottom {
+            justify-content: center;
+            padding: 10px;
+
+            button.logout-btn span {
+              display: none;
             }
           }
         }
       }
-
-      div.bottom {
-        justify-content: center;
-        padding: 10px;
-
-        button.logout-btn span {
-          display: none;
+    
+    /* MOBILE ACTIVE STATE */
+    @media (max-width: 768px) {
+      &.active {
+        width: 280px;
+        transform: translateX(0);
+        
+        .sidebar-logo {
+          opacity: 1 !important;
         }
       }
     }
   }
 }
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+

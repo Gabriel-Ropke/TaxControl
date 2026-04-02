@@ -4,7 +4,8 @@ import { useEffect, useState, useMemo, useCallback } from "react";
 import { getCompanyById, getTaxesByCompany, deleteTax, deleteCompany } from "../../services/api";
 import { ArrowLeft, Pencil, Trash2 } from "lucide-react";
 import { generateColor } from "../../utils/generateColor";
-import { ResumeCard } from "../../components/resumeCard/ResumeCard";
+import { ResumeCard } from "../../components/ResumeCard/ResumeCard";
+
 import { TaxChart } from "../../components/TaxChart/TaxChart";
 import { TaxModal } from "../../components/TaxModal/TaxModal";
 import { EnterpriseModal } from "../../components/EnterpriseModal/EnterpriseModal";
@@ -90,9 +91,7 @@ export function Enterprise() {
   const {
     sorted = [],
     latest = null,
-    previous = null,
     latestTotal = 0,
-    previousTotal = 0,
     variation = null,
     highest = null,
     accumulated = 0,
@@ -121,9 +120,7 @@ export function Enterprise() {
     return {
       sorted,
       latest,
-      previous,
       latestTotal,
-      previousTotal,
       variation,
       highest,
       accumulated,
@@ -216,71 +213,74 @@ export function Enterprise() {
               + Novo Registro
             </button>
           </div>
-          <table>
-            <thead>
-              <tr>
-                <th>Mês</th>
-                {taxFields.map((field) => (
-                  <th key={field}>{FIELD_LABELS[field]}</th>
-                ))}
-                <th>Total</th>
-                <th>Variação</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {[...sorted].reverse().map((tax, idx, arr) => {
-                const total = getTotalFromRecord(tax);
-                const prevRecord = arr[idx + 1];
-                const prevTotal = prevRecord
-                  ? getTotalFromRecord(prevRecord)
-                  : null;
-                const variation = prevTotal
-                  ? (((total - prevTotal) / prevTotal) * 100).toFixed(1)
-                  : null;
+          <div className="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Mês</th>
+                  {taxFields.map((field) => (
+                    <th key={field}>{FIELD_LABELS[field]}</th>
+                  ))}
+                  <th>Total</th>
+                  <th>Variação</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {[...sorted].reverse().map((tax, idx, arr) => {
+                  const total = getTotalFromRecord(tax);
+                  const prevRecord = arr[idx + 1];
+                  const prevTotal = prevRecord
+                    ? getTotalFromRecord(prevRecord)
+                    : null;
+                  const variation = prevTotal
+                    ? (((total - prevTotal) / prevTotal) * 100).toFixed(1)
+                    : null;
 
-                return (
-                  <tr key={tax.id}>
-                    <td className="td-date">{formatMonthShortPt(tax.date)}</td>
-                    {taxFields.map((field) => (
-                      <td key={field}>
-                        {tax[field] != null ? formatBRL(tax[field]) : "—"}
+                  return (
+                    <tr key={tax.id}>
+                      <td className="td-date">{formatMonthShortPt(tax.date)}</td>
+                      {taxFields.map((field) => (
+                        <td key={field}>
+                          {tax[field] != null ? formatBRL(tax[field]) : "—"}
+                        </td>
+                      ))}
+                      <td className="td-total">{formatBRL(total)}</td>
+                      <td>
+                        {variation != null ? (
+                          <span
+                            className={
+                              Number(variation) >= 0 ? "positive" : "negative"
+                            }
+                          >
+                            {Number(variation) >= 0 ? "+" : ""}
+                            {variation}%
+                          </span>
+                        ) : (
+                          "—"
+                        )}
                       </td>
-                    ))}
-                    <td className="td-total">{formatBRL(total)}</td>
-                    <td>
-                      {variation != null ? (
-                        <span
-                          className={
-                            Number(variation) >= 0 ? "positive" : "negative"
-                          }
+
+                      <td className="td-actions">
+                        <button
+                          className="btn-edit"
+                          onClick={() => handleEdit(tax)}
                         >
-                          {Number(variation) >= 0 ? "+" : ""}
-                          {variation}%
-                        </span>
-                      ) : (
-                        "—"
-                      )}
-                    </td>
-                    <td className="td-actions">
-                      <button
-                        className="btn-edit"
-                        onClick={() => handleEdit(tax)}
-                      >
-                        <Pencil size={14} />
-                      </button>
-                      <button
-                        className="btn-delete"
-                        onClick={() => handleDelete(tax.id)}
-                      >
-                        <Trash2 size={14} />
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                          <Pencil size={14} />
+                        </button>
+                        <button
+                          className="btn-delete"
+                          onClick={() => handleDelete(tax.id)}
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       </section>
 

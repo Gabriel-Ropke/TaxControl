@@ -1,7 +1,6 @@
 import "./resumeCard.css";
 
 export function ResumeCard({ title, value, percent, date, color, valueColor, clickable, active, onClick }) {
-  const isPositive = percent > 0;
 
   return (
     <div

@@ -34,7 +34,9 @@ export const homeTableColumns = [
   { key: "name", label: "Empresa" },
   { key: "tax_type", label: "Tributação" },
   ...taxFields.map((key) => ({ key, label: FIELD_LABELS[key] })),
+  { key: "total", label: "Total" },
 ];
+
 
 export const getTotalFromRecord = (record) =>
   taxFields.reduce((sum, field) => sum + (record?.[field] ?? 0), 0);
