@@ -19,18 +19,40 @@ export function AuthCallback() {
   const [validationRules, setValidationRules] = useState([]);
 
   useEffect(() => {
-    const checkHash = () => {
+    const checkHash = async () => {
       const hash = window.location.hash;
       const isRecovery = searchParams.get("type") === "recovery";
       const hasAccessToken = hash.includes("access_token=");
+      const code = searchParams.get("code");
       
       if (isRecovery && hasAccessToken) {
         setIsResetPassword(true);
         setLoading(false);
         return;
       }
+
+      if (code) {
+        // É um retorno de OAuth (ex: Google). O Supabase vai trocar o código pela sessão sozinho.
+        // Vamos apenas aguardar a sessão ser criada antes de redirecionar.
+        const { data } = await supabase.auth.getSession();
+        if (data?.session) {
+          navigate("/home", { replace: true });
+        } else {
+          // Se ainda não tem sessão, aguarda o evento de SIGNED_IN
+          const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_IN') {
+              navigate("/home", { replace: true });
+            }
+          });
+          // Não redirecionamos imediatamente. O componente fica em "Carregando..."
+          return;
+        }
+      }
       
-      navigate("/", { replace: true });
+      // Se não for recuperação nem OAuth, volta pro login
+      if (!code && !isRecovery) {
+        navigate("/", { replace: true });
+      }
     };
     
     checkHash();

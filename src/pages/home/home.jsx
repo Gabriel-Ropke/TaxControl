@@ -54,14 +54,14 @@ export function Home() {
     // Encontrar mês anterior
     const currentIdx = months.findIndex(m => m.date === selectedMonth.date);
     const prevMonth = currentIdx > 0 ? months[currentIdx - 1] : null;
-    
+
     let totalVariation = null;
     let discrepancies = 0;
 
     if (prevMonth) {
       const prevMonthTaxes = taxes.filter(t => t.date === prevMonth.date);
       const totalPrev = prevMonthTaxes.reduce((acc, t) => acc + getTotalFromRecord(t), 0);
-      
+
       if (totalPrev > 0) {
         totalVariation = ((totalMonth - totalPrev) / totalPrev) * 100;
       }
@@ -70,7 +70,7 @@ export function Home() {
       companies.forEach(company => {
         const currRecord = currentMonthTaxes.find(t => String(t.company_id) === String(company.id));
         const prevRecord = prevMonthTaxes.find(t => String(t.company_id) === String(company.id));
-        
+
         if (currRecord && prevRecord) {
           const vCurr = getTotalFromRecord(currRecord);
           const vPrev = getTotalFromRecord(prevRecord);
@@ -136,7 +136,7 @@ export function Home() {
               </ul>
             </div>
           </div>
-          <button 
+          <button
             className="default add-enterprise"
             onClick={() => setIsEnterpriseModalOpen(true)}
           >
